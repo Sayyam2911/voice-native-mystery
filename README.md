@@ -4,6 +4,8 @@ A browser investigation built around prepared, immutable mysteries, flexible cha
 
 Interviews use an explicit voice call, not typed chat. The detective has a separate partner contact, away from case-subject pins; call transcripts and discovered observations remain available as read-only references. Selecting a person does not activate the microphone until the player starts the call.
 
+The investigation chooser has three locally bundled, spoiler-free generated location covers; prompts are in `public/assets/case-cover-manifest.json`. Artwork is separate presentation metadata, not new case evidence. The board is isolated from streaming caption updates, and ordinary spoken dialogue uses the character's existing public persona without changing authored revelation rules.
+
 The catalog contains **Grange House**, **Blackwater Cabin**, and **The Willowmere Affair**, standalone contemporary adaptations of Arthur Conan Doyle mysteries. Each targets 15–30 minutes and has its own cast, observations, gated testimony, detective leads, and evidence-backed/earned-confession resolution. See [case sourcing](architecture/case-sourcing.md) for attribution and [validation](architecture/cases/catalog-validation.md) for checks; pacing still needs human playtesting.
 
 ## Structure

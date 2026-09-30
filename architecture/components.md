@@ -1,6 +1,6 @@
 # Components and responsibilities (working draft)
 
-These logical components are implemented as modules within a single browser app and one Node/Express API deployment, not separate microservices. React/Vite, Groq, AssemblyAI, and the MongoDB repository are the current implementation baseline. Local Atlas persistence is verified; integrated voice and public deployment are pending.
+These logical components are implemented as modules within a single browser app and one Node/Express API deployment, not separate microservices. React/Vite, Groq, AssemblyAI, and the MongoDB repository are the current implementation baseline. Local Atlas persistence is verified. Local voice callbacks now have reachability and live/delivery metadata evidence; full listening/alignment checks and public deployment remain pending.
 
 | Component | Responsibility |
 | --- | --- |
@@ -15,3 +15,5 @@ These logical components are implemented as modules within a single browser app 
 The backend can enforce structured state transitions but cannot guarantee the truth of arbitrary generated prose without additional controls and testing. See the [spoken-clue sequence](flows.md#spoken-clue-and-player-barge-in).
 
 The diagnostic text-turn API remains for automated rule/API tests, but is not a player-facing fallback. Call failures offer retry; visitors may still inspect the board and make a supported reconstruction. Transcript replies use delivered text only, never the unheard remainder of an interrupted response. Partner separation is presentation-only and uses the case's `partnerId`; the same server-authorized selection and voice pipeline serves all characters.
+
+The board is a memoized rendering boundary with stable handlers; speech captions must not regenerate its nodes or edges. Text-bearing pins are not rotated or filtered, and paper/exhibit/lead text uses readable sizes and higher contrast. Only ornaments retain rotation. Catalog cover artwork is a separate data manifest, projected generically by case ID; updating decorative art does not mutate frozen case packs or existing visitor sessions. The generated scenes are atmosphere, not additional evidence.

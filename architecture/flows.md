@@ -87,3 +87,9 @@ sequenceDiagram
 ```
 
 The transcript write precedes the LLM call, so an LLM failure does not erase what the player said. The approved response write precedes speech. The browser never sends raw audio to MongoDB; it streams audio to AssemblyAI. A later turn uses current structured game state and relevant prior text, not the whole database or private case truth. Voice-session binding, actual sentence playback alignment, and cross-document consistency are implementation gates, not proven behavior of the prototype.
+
+### September 30 client safeguards
+
+Call startup now probes public callback health without credentials before creating a provider agent. After `reply.started`, the browser waits at most 30 seconds for playable audio; a stall shows an error and ends the call through the voice hook rather than remaining indefinitely in “Considering your question.” The watchdog is cancelled on audio, barge-in, or call closure. A normal `reply.done` may omit `reply_id`, so completion is associated with the active reply; acknowledgement still waits for queued local audio to drain. Text arriving without any playable audio is not acknowledged as heard. These payload choices follow the [AssemblyAI event reference](https://www.assemblyai.com/docs/voice-agents/voice-agent-api/events-reference).
+
+Voice captions and audio chunks do not rebuild the evidence graph. The board is memoized behind stable action callbacks, and equal/older session revisions are ignored. New authoritative discoveries still update the board; dragging and viewport movement remain presentation state.

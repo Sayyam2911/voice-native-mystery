@@ -1,4 +1,5 @@
 import { authoredCases } from './content/catalog.mjs';
+import { catalogArtwork } from './content/artwork.mjs';
 export { authoredCases };
 
 export function validateCase(pack) {
@@ -78,6 +79,7 @@ export function catalogProjection(pack) {
     difficulty,
     source,
     castSize: pack.characters.length - 1,
+    cover: catalogArtwork(id),
   };
 }
 

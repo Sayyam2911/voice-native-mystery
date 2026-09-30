@@ -1,0 +1,24 @@
+{
+  "generator": "Built-in image generation (not CLI/API fallback)",
+  "purpose": "Spoiler-free atmospheric artwork for the investigation catalog. Presentation metadata only; not evidence or a change to immutable case facts.",
+  "assets": [
+    {
+      "caseId": "grange-house",
+      "prompt": "Use case: stylized-concept. Asset type: landscape case-cover artwork for the Choose your investigation cards in a dark contemporary detective game. Style/medium: cinematic photorealistic environment concept art, believable present-day Britain, detailed weathered materials, restrained film grain. Composition/framing: wide landscape 2:1 image, one readable establishing scene, central focal area safe for responsive cropping. Lighting/mood: tense, quiet and atmospheric, dark olive/charcoal shadows and subtle muted warm highlights, enough midtone detail to read at thumbnail size. Constraints: only the location, no people, no bodies, no blood, no weapons, no evidence closeups, no solution clues, no text, no borders, no logos, no watermarks; this is atmosphere, not an evidence photograph.\nPrimary request: Grange House. Scene/backdrop: a large inhabited contemporary English country house at night, stone facade and tall dining-room windows with soft warm interior light, a terrace in the foreground after rain, wet stone reflecting the light, dark trees at the edge. Subject: the house and its quiet illuminated windows, a mysterious private estate without any crime being depicted.",
+      "file": "covers/grange-house.png",
+      "alt": "Warm-lit windows of a country house above a rain-darkened terrace."
+    },
+    {
+      "caseId": "blackwater-cabin",
+      "prompt": "Use case: stylized-concept. Asset type: landscape case-cover artwork for the Choose your investigation cards in a dark contemporary detective game. Style/medium: cinematic photorealistic environment concept art, believable present-day Britain, detailed weathered materials, restrained film grain. Composition/framing: wide landscape 2:1 image, one readable establishing scene, central focal area safe for responsive cropping. Lighting/mood: tense, quiet and atmospheric, dark olive/charcoal shadows and subtle muted warm highlights, enough midtone detail to read at thumbnail size. Constraints: only the location, no people, no bodies, no blood, no weapons, no evidence closeups, no solution clues, no text, no borders, no logos, no watermarks; this is atmosphere, not an evidence photograph.\nPrimary request: Blackwater Cabin. Scene/backdrop: a small weathered wooden office cabin at a present-day British coastal boatyard after dark, a single warm-lit window, wet timber walkway and shadowy ordinary boat hulls beyond, low coastal mist over still water. Subject: the cabin and secluded working waterfront. No specific boat-hooks, notebooks, documents, broken door or other clues.",
+      "file": "covers/blackwater-cabin.png",
+      "alt": "A lamplit wooden cabin at a misty coastal boatyard."
+    },
+    {
+      "caseId": "willowmere",
+      "prompt": "Use case: stylized-concept. Asset type: landscape case-cover artwork for the Choose your investigation cards in a dark contemporary detective game. Style/medium: cinematic photorealistic environment concept art, believable present-day Britain, detailed weathered materials, restrained film grain. Composition/framing: wide landscape 2:1 image, one readable establishing scene, central focal area safe for responsive cropping. Lighting/mood: tense, quiet and atmospheric, dark olive/charcoal shadows and subtle muted warm highlights, enough midtone detail to read at thumbnail size. Constraints: only the location, no people, no bodies, no blood, no weapons, no evidence closeups, no solution clues, no text, no borders, no logos, no watermarks; this is atmosphere, not an evidence photograph.\nPrimary request: The Willowmere Affair. Scene/backdrop: a quiet lake beside a contemporary English country estate, wooded walking path and a small ordinary timber footbridge partly visible among the willows, late afternoon under heavy overcast skies, soft reflections in the water and a distant modest estate house. Subject: the still lake and secluded path. Mood: sombre and unsettling but realistic, not supernatural. No bags, clothing, footprints or other clue props.",
+      "file": "covers/willowmere.png",
+      "alt": "A willow-lined lake and secluded path beside a country estate."
+    }
+  ]
+}

@@ -10,6 +10,8 @@ September 30 refinement: the owner requested a darker, game-first photo/pin inve
 
 September 30 voice-first refinement: the owner requested removing the detective from case-subject pins, improving unhovered portrait-label clarity, and removing typed chat. A separate partner contact and a call-first interview drawer now serve that presentation; server-side identity, rules, and persistence are unchanged.
 
+Follow-up refinement: the owner requested fixing speech-time board flashes, making ordinary character dialogue more human, sharpening all board text, and three investigation-cover images. Implementation isolates the board from audio/caption updates, uses existing public character biographies for conversational manner without changing revelation rules, removes text-container rotation/filters, and adds spoiler-free generated cover assets via presentation metadata. No new speech provider or case-specific engine branch was introduced.
+
 | Decision | Reason | Status |
 | --- | --- | --- |
 | Build a reusable multi-story application, with no fixed catalog-size requirement | Returning players should have different cases to solve; a few good cases are sufficient initially | Accepted |

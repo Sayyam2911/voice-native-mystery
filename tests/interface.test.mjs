@@ -5,7 +5,7 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { createServer } from 'vite';
 import { casePeople, caseConnections } from '../src/lib/board.js';
-import { authoredCases, initialState, projectGame } from '../server/cases.mjs';
+import { authoredCases, catalogProjection, initialState, projectGame } from '../server/cases.mjs';
 import { VoiceClient } from '../src/lib/voice-client.js';
 
 // Render the actual JSX without a browser, microphone, model calls, or real visitor data.
@@ -21,6 +21,10 @@ const renderer = await createServer({
 after(() => renderer.close());
 const { InterviewPanel } = await renderer.ssrLoadModule('/src/components/InterviewPanel.jsx');
 const { PartnerContact } = await renderer.ssrLoadModule('/src/components/PartnerContact.jsx');
+const { InvestigationBoard } = await renderer.ssrLoadModule(
+  '/src/components/InvestigationBoard.jsx',
+);
+const { CaseCatalog } = await renderer.ssrLoadModule('/src/components/CaseCatalog.jsx');
 const contact = {
   id: 'witness',
   name: 'Test Witness',
@@ -208,4 +212,21 @@ test('voice activity switches to thinking for a pending reply and back to listen
   client.event({ type: 'input.speech.started' });
   assert.deepEqual(states, ['listening', 'thinking', 'listening']);
   assert.equal(client.current.interrupted, true);
+});
+
+test('the evidence board is a memo boundary, isolated from unrelated voice caption updates', () => {
+  assert.equal(InvestigationBoard.$$typeof, Symbol.for('react.memo'));
+  assert.equal(typeof InvestigationBoard.type, 'function');
+});
+
+test('the investigation chooser renders one local cover per case, with a generic art fallback', () => {
+  const cases = authoredCases.map(catalogProjection);
+  for (const pack of cases) assert.match(pack.cover.src, /^\/assets\/covers\/[^/]+\.png$/);
+  const html = renderToStaticMarkup(createElement(CaseCatalog, { cases, busy: false }));
+  assert.equal((html.match(/<img\b/g) || []).length, 3);
+  assert.match(html, /loading="lazy"/);
+  const future = { ...cases[0], id: 'future-story', cover: null };
+  const fallback = renderToStaticMarkup(createElement(CaseCatalog, { cases: [future] }));
+  assert.doesNotMatch(fallback, /<img\b/);
+  assert.match(fallback, /lucide-fingerprint/);
 });

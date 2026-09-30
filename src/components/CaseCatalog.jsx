@@ -46,8 +46,12 @@ export function CaseCatalog({ cases, busy, onStart, onResume, activeCase, health
         <div className="case-grid">
           {cases.map((pack, index) => (
             <article className="case-card" key={pack.id}>
-              <div className="case-art" aria-hidden="true">
-                <Fingerprint strokeWidth={0.8} size={120} />
+              <div className={`case-art ${pack.cover?.src ? 'has-cover' : ''}`} aria-hidden="true">
+                {pack.cover?.src ? (
+                  <img src={pack.cover.src} alt="" loading="lazy" decoding="async" />
+                ) : (
+                  <Fingerprint strokeWidth={0.8} size={120} />
+                )}
                 <span className="file-number">FILE {String(index + 1).padStart(3, '0')}</span>
                 <span className="art-caption">A VOICE INVESTIGATION</span>
               </div>
