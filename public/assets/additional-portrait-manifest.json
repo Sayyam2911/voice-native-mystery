@@ -1,0 +1,38 @@
+{
+  "generator": "Built-in image generation (not CLI/API fallback)",
+  "purpose": "Eight original fictional character portraits for the two additional contemporary investigations.",
+  "assets": [
+    {
+      "file": "avatars/blackwater-cabin-elias.png",
+      "prompt": "Use case: photorealistic-natural. Asset type: fictional character portrait for a contemporary murder-mystery game, displayed as a pinned photo on a dark evidence board. Subject: A fictional man around 28, slim face, short curly brown hair, tired earnest eyes, plain burgundy sweater under an everyday dark jacket. Scene/backdrop: plain dim neutral gray-brown background. Composition: single person only, centered head and shoulders, entire head visible, eye-level 85mm portrait, vertical portrait crop. Style: believable natural photography, real skin pores, hair texture and worn fabric; entirely invented person, not a celebrity. Lighting: soft moody side light, face fully legible, muted earthy color, restrained film grain. No weapon, blood, text, border, watermark, logos, or extra people."
+    },
+    {
+      "file": "avatars/blackwater-cabin-liv.png",
+      "prompt": "Use case: photorealistic-natural. Asset type: fictional character portrait for a contemporary murder-mystery game, displayed as a pinned photo on a dark evidence board. Subject: A fictional woman around 45, short sandy-blonde hair, lined practical face, alert guarded eyes, olive canvas work jacket. Scene/backdrop: plain dim neutral gray-brown background. Composition: single person only, centered head and shoulders, entire head visible, eye-level 85mm portrait, vertical portrait crop. Style: believable natural photography, real skin pores, hair texture and worn fabric; entirely invented person, not a celebrity. Lighting: soft moody side light, face fully legible, muted earthy color, restrained film grain. No weapon, blood, text, border, watermark, logos, or extra people."
+    },
+    {
+      "file": "avatars/blackwater-cabin-dena.png",
+      "prompt": "Use case: photorealistic-natural. Asset type: fictional character portrait for a contemporary murder-mystery game, displayed as a pinned photo on a dark evidence board. Subject: A fictional Black British woman around 39, neat short natural curls, attentive serious expression, navy utility jacket over a gray shirt. Scene/backdrop: plain dim neutral gray-brown background. Composition: single person only, centered head and shoulders, entire head visible, eye-level 85mm portrait, vertical portrait crop. Style: believable natural photography, real skin pores, hair texture and worn fabric; entirely invented person, not a celebrity. Lighting: soft moody side light, face fully legible, muted earthy color, restrained film grain. No weapon, blood, text, border, watermark, logos, or extra people."
+    },
+    {
+      "file": "avatars/blackwater-cabin-rafe.png",
+      "prompt": "Use case: photorealistic-natural. Asset type: fictional character portrait for a contemporary murder-mystery game, displayed as a pinned photo on a dark evidence board. Subject: A fictional man around 54, weathered broad face, cropped gray hair, short salt-and-pepper beard, steady wary eyes, faded dark blue work jacket. Scene/backdrop: plain dim neutral gray-brown background. Composition: single person only, centered head and shoulders, entire head visible, eye-level 85mm portrait, vertical portrait crop. Style: believable natural photography, real skin pores, hair texture and worn fabric; entirely invented person, not a celebrity. Lighting: soft moody side light, face fully legible, muted earthy color, restrained film grain. No weapon, blood, text, border, watermark, logos, or extra people."
+    },
+    {
+      "file": "avatars/willowmere-noah.png",
+      "prompt": "Use case: photorealistic-natural. Asset type: fictional character portrait for a contemporary murder-mystery game, displayed as a pinned photo on a dark evidence board. Subject: A fictional man around 25, straight dark hair falling slightly over his forehead, clean shaven, anxious thoughtful eyes, plain charcoal hoodie under a light brown jacket. Scene/backdrop: plain dim neutral gray-brown background. Composition: single person only, centered head and shoulders, entire head visible, eye-level 85mm portrait, vertical portrait crop. Style: believable natural photography, real skin pores, hair texture and worn fabric; entirely invented person, not a celebrity. Lighting: soft moody side light, face fully legible, muted earthy color, restrained film grain. No weapon, blood, text, border, watermark, logos, or extra people."
+    },
+    {
+      "file": "avatars/willowmere-amelia.png",
+      "prompt": "Use case: photorealistic-natural. Asset type: fictional character portrait for a contemporary murder-mystery game, displayed as a pinned photo on a dark evidence board. Subject: A fictional woman around 29, chin-length copper-red hair, intelligent worried expression, dark green wool sweater. Scene/backdrop: plain dim neutral gray-brown background. Composition: single person only, centered head and shoulders, entire head visible, eye-level 85mm portrait, vertical portrait crop. Style: believable natural photography, real skin pores, hair texture and worn fabric; entirely invented person, not a celebrity. Lighting: soft moody side light, face fully legible, muted earthy color, restrained film grain. No weapon, blood, text, border, watermark, logos, or extra people."
+    },
+    {
+      "file": "avatars/willowmere-sanjay.png",
+      "prompt": "Use case: photorealistic-natural. Asset type: fictional character portrait for a contemporary murder-mystery game, displayed as a pinned photo on a dark evidence board. Subject: A fictional British Indian man around 47, close-cut black hair graying at the temples, modest mustache, quiet observant expression, plain brown outdoor work jacket. Scene/backdrop: plain dim neutral gray-brown background. Composition: single person only, centered head and shoulders, entire head visible, eye-level 85mm portrait, vertical portrait crop. Style: believable natural photography, real skin pores, hair texture and worn fabric; entirely invented person, not a celebrity. Lighting: soft moody side light, face fully legible, muted earthy color, restrained film grain. No weapon, blood, text, border, watermark, logos, or extra people."
+    },
+    {
+      "file": "avatars/willowmere-gideon.png",
+      "prompt": "Use case: photorealistic-natural. Asset type: fictional character portrait for a contemporary murder-mystery game, displayed as a pinned photo on a dark evidence board. Subject: A fictional man around 63, swept-back silver hair, clean-shaven lined face, reserved dignified expression, dark wool jacket over a pale collared shirt. Scene/backdrop: plain dim neutral gray-brown background. Composition: single person only, centered head and shoulders, entire head visible, eye-level 85mm portrait, vertical portrait crop. Style: believable natural photography, real skin pores, hair texture and worn fabric; entirely invented person, not a celebrity. Lighting: soft moody side light, face fully legible, muted earthy color, restrained film grain. No weapon, blood, text, border, watermark, logos, or extra people."
+    }
+  ]
+}

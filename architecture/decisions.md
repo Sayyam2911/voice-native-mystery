@@ -2,6 +2,8 @@
 
 Record only decisions made with the project owner. Proposals remain open until discussed.
 
+September 30 content implementation: the owner delegated adding two investigations under the existing rules. The previously shortlisted Black Peter and Boscombe Valley sources were adapted as **Blackwater Cabin** and **The Willowmere Affair**, bringing the published catalog to three. Their concrete contemporary evidence, gate and proof choices are delegated implementation details documented in the case bibles, not new platform architecture decisions. No case-specific engine/UI logic was added.
+
 ## Accepted scope
 
 September 30 refinement: the owner requested a darker, game-first photo/pin investigation wall rather than a dashboard. Physical clues should state observations, with interpretive hints on request. The engine and UI remain case-independent; portrait and exhibit labels are case metadata. See the [checkpoint](implementation-status.md) for implemented behavior and remaining gaps.
@@ -53,7 +55,7 @@ September 30 refinement: the owner requested a darker, game-first photo/pin inve
 
 | Choice | Trade-off to resolve |
 | --- | --- |
-| Initial case lineup | Abbey Grange, Boscombe Valley, and Black Peter are lead candidates; Golden Pince-Nez is a reserve |
+| Initial case lineup | Three packs now implemented from Abbey Grange, Black Peter, and Boscombe Valley; a fourth is optional, not required |
 | Exact partner hint thresholds and tool access | Need tuning against case length, player progress, and spoiler risk |
 | Exact per-case proof and confession triggers | Case authoring must specify which clues satisfy proof or unlock a confession, then validation must test those paths |
 | Degree of modernization | Period clues, access, communications, and suspect availability must be adapted and revalidated |

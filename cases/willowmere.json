@@ -1,0 +1,324 @@
+{
+  "schemaVersion": 1,
+  "id": "willowmere",
+  "version": 1,
+  "title": "The Willowmere Affair",
+  "subtitle": "An argument beside the lake is only part of the timeline",
+  "setting": "A country estate in Herefordshire, present day",
+  "duration": "15–30 minutes",
+  "difficulty": "Intermediate",
+  "source": {
+    "title": "The Boscombe Valley Mystery",
+    "author": "Arthur Conan Doyle",
+    "url": "https://www.gutenberg.org/ebooks/1661",
+    "adaptation": "A standalone contemporary adaptation with original names, modern records, and an added planted-bag deception."
+  },
+  "partnerId": "detective",
+  "briefing": "Carl Bennett was found dead beside Willowmere lake after a heated argument with his son Noah. Noah returned with blood on his sleeves, and a fishing bag was found beside the body. A witness saw the argument but not the attack. Review the assembled next-day file, establish who caused the death, and explain the arrangement of the scene without mistaking suspicion for proof.",
+  "openingFacts": [
+    "A groundskeeper saw Carl and Noah arguing shortly after 16:00.",
+    "Noah reported finding his father injured when he returned to the lake; the emergency call was logged at 16:15.",
+    "The preliminary report records a fatal blunt head injury and a fishing bag near the body."
+  ],
+  "characters": [
+    {
+      "id": "detective",
+      "name": "Detective Rowan",
+      "role": "Investigative partner",
+      "initials": "DR",
+      "initial": true,
+      "voice": "charles",
+      "avatar": "/assets/avatars/grange-house-detective.png",
+      "bio": "Checks existing records and helps compare the observations you have discovered.",
+      "facts": [
+        "I know only the briefing and discovered evidence.",
+        "Available leads retrieve existing scene, path, appointment, and account records.",
+        "An argument, a family connection, or a payment is not proof of a fatal act."
+      ],
+      "topics": [
+        "Where should I begin?",
+        "Check the path timings",
+        "Follow the appointment record"
+      ],
+      "fallbackReply": "Separate the argument from the time of the injury. Start with the scene file, then compare independent timings and what the witness actually saw."
+    },
+    {
+      "id": "noah",
+      "name": "Noah Bennett",
+      "role": "Victim's son",
+      "initials": "NB",
+      "initial": true,
+      "voice": "paul",
+      "avatar": "/assets/avatars/willowmere-noah.png",
+      "bio": "Argued with his father and later made the emergency call.",
+      "facts": [
+        "I argued with my father, walked toward the footbridge, and returned when I heard a cry.",
+        "My sleeves got blood on them while I tried to help him.",
+        "The fishing bag is mine. I did not strike him.",
+        "I initially refuse to explain our private disagreement."
+      ],
+      "topics": [
+        "What happened after the argument?",
+        "Why was your bag there?",
+        "What was the disagreement about?"
+      ],
+      "fallbackReply": "I had an argument, not an attack. I went toward the bridge and came back when I heard him cry out. Please check what happened in between."
+    },
+    {
+      "id": "amelia",
+      "name": "Amelia Ward",
+      "role": "Estate owner's daughter",
+      "initials": "AW",
+      "initial": true,
+      "voice": "anna",
+      "avatar": "/assets/avatars/willowmere-amelia.png",
+      "bio": "A friend of Noah; her father owns the estate where the Bennetts live.",
+      "facts": [
+        "I know Noah and do not believe an argument proves he killed anyone.",
+        "My father Gideon Ward owns the estate and has known Carl for years.",
+        "I was in town that afternoon and did not see what happened at the lake."
+      ],
+      "topics": [
+        "How do the families know each other?",
+        "Why did they argue?",
+        "Did your father have a meeting?"
+      ],
+      "fallbackReply": "I cannot be a witness to something I did not see. I can answer about the families, but the scene and records have to establish what happened."
+    },
+    {
+      "id": "sanjay",
+      "name": "Sanjay Patel",
+      "role": "Groundskeeper and witness",
+      "initials": "SP",
+      "initial": true,
+      "voice": "michael",
+      "avatar": "/assets/avatars/willowmere-sanjay.png",
+      "bio": "Saw the argument while maintaining the path near the lake.",
+      "facts": [
+        "I saw Carl and Noah arguing around 16:04. Noah raised an arm, but I did not see a blow.",
+        "Initially I said I left the area immediately and saw nobody else.",
+        "The path camera covers the footbridge, not the lake or the wooded estate path.",
+        "I am worried about contradicting my employer."
+      ],
+      "topics": [
+        "Exactly what did you see?",
+        "Did you stay after the argument?",
+        "Who used the wooded path?"
+      ],
+      "fallbackReply": "I saw the argument, not the injury being caused. Do not turn a raised hand into a blow I never witnessed."
+    },
+    {
+      "id": "gideon",
+      "name": "Gideon Ward",
+      "role": "Estate owner",
+      "initials": "GW",
+      "initial": true,
+      "voice": "george",
+      "avatar": "/assets/avatars/willowmere-gideon.png",
+      "bio": "A longstanding associate of Carl and father of Amelia.",
+      "facts": [
+        "Carl and I knew each other before we moved to Herefordshire.",
+        "I have let the Bennetts use a cottage on favorable terms.",
+        "Initially I say I stayed in my study that afternoon and had no appointment with Carl.",
+        "My old knee injury means I sometimes use a walking stick; that alone says nothing about this case."
+      ],
+      "topics": [
+        "Where were you that afternoon?",
+        "Did you arrange to meet Carl?",
+        "Explain the corrected witness account"
+      ],
+      "fallbackReply": "I have helped that family for years. Do not confuse an old association with proof of what happened at the lake."
+    }
+  ],
+  "clues": [
+    {
+      "id": "W1",
+      "title": "A narrow smear beneath the bag",
+      "exhibitLabel": "Lakeside scene photographs",
+      "kind": "physical",
+      "source": "Scene photographs taken before collection",
+      "body": "A narrow blood smear runs from the bench toward the fishing bag beside the body. The bag's underside is marked; its shoulder strap is clean. The photograph does not show who moved it or when Noah last handled it.",
+      "characters": ["noah", "gideon"],
+      "inspectable": true,
+      "requires": {}
+    },
+    {
+      "id": "W2",
+      "title": "A stone inside the open bag",
+      "exhibitLabel": "Bag contents and preliminary injury note",
+      "kind": "physical",
+      "source": "Existing collection inventory and next-day preliminary assessment",
+      "body": "A heavy landscaping stone was collected from the open fishing bag. A dark mark on its flat edge and the recorded injury shape are consistent with a blunt strike; the note does not identify who used it. The fishing rod is unbroken and has no corresponding impact damage.",
+      "characters": ["noah", "gideon"],
+      "inspectable": true,
+      "requires": {}
+    },
+    {
+      "id": "W3",
+      "title": "Square heels and a stick mark",
+      "exhibitLabel": "Wooded-path impression photographs",
+      "kind": "physical",
+      "source": "Scene path photographs and measured impressions",
+      "body": "Square-heeled boot impressions and a round stick-tip mark lead from the wooded estate path toward the bench and back. Noah's photographed trainers have a different tread. Several people can own boots or a stick; these observations are not an identification.",
+      "characters": ["noah", "sanjay", "gideon"],
+      "inspectable": true,
+      "requires": {}
+    },
+    {
+      "id": "W4",
+      "title": "Noah at the footbridge",
+      "kind": "record",
+      "source": "Already-collected footbridge camera recording and emergency-call log",
+      "body": "Continuous camera coverage shows Noah on the footbridge from 16:08 until he starts back at 16:12. His call follows at 16:15. Sanjay's initial interview places the argument around 16:04; the recording leaves an interval at the lake after Noah left. It does not date the fatal injury by itself.",
+      "characters": ["noah", "sanjay"]
+    },
+    {
+      "id": "W5",
+      "title": "An appointment addressed to Gideon",
+      "kind": "record",
+      "source": "Existing victim-phone extraction authorized in the case file",
+      "body": "A message sent that morning from Carl to Gideon's verified number says: 'Lake bench, 16:10. The papers and the cottage terms. No more delays.' A reply from that number says: 'We will talk there.' This contradicts Gideon's initial denial of an appointment, not automatically his denial of an attack.",
+      "characters": ["gideon", "amelia"]
+    },
+    {
+      "id": "W6",
+      "title": "Sanjay's corrected sighting",
+      "kind": "testimony",
+      "source": "Sanjay Patel's corrected interview",
+      "body": "Sanjay admits staying behind the tool shed after the argument. He saw Noah leave toward the bridge, then Gideon come from the woods carrying a walking stick. After a cry he saw Gideon bent over the bag, with his gray coat folded over one arm. He did not see the blow and initially withheld this because Gideon employs him.",
+      "characters": ["sanjay", "noah", "gideon"]
+    },
+    {
+      "id": "W7",
+      "title": "The cottage payments",
+      "kind": "record",
+      "source": "Previously obtained estate ledger and Carl's message thread",
+      "body": "The estate ledger shows recurring payments to Carl despite the rent-free cottage. His message thread threatens publication of old financial papers unless Gideon transfers the cottage outright. That documents pressure and a possible motive, not who caused the injury.",
+      "characters": ["gideon", "amelia"]
+    },
+    {
+      "id": "W8",
+      "title": "Noah's account of the bag",
+      "kind": "testimony",
+      "source": "Noah Bennett's corrected interview detail",
+      "body": "Noah says he left his fishing bag under the bench when he walked away and returned to find it by his father's body. He says the argument concerned Carl pressuring him to persuade Amelia to obtain a share of the estate. These are interview claims, not independent proof.",
+      "characters": ["noah", "amelia"]
+    },
+    {
+      "id": "W9",
+      "title": "Gideon admits the appointment",
+      "kind": "testimony",
+      "source": "Gideon Ward's partial admission",
+      "body": "Gideon admits agreeing to meet Carl about the cottage and old papers. He now says he walked toward the lake but turned back, still denying the attack. This supersedes his earlier claim that he remained in his study.",
+      "characters": ["gideon"]
+    },
+    {
+      "id": "W10",
+      "title": "Amelia's account of the pressure",
+      "kind": "testimony",
+      "source": "Amelia Ward's interview",
+      "body": "Amelia says Carl pressured Noah to involve her in the cottage transfer and her father resisted it. She knows nothing first-hand about the death. Her account provides relationship context rather than a witness identification.",
+      "characters": ["amelia", "noah", "gideon"]
+    },
+    {
+      "id": "W-CONFESSION",
+      "title": "Gideon's verified account",
+      "kind": "confession",
+      "source": "Gideon's admission checked against a withheld collection note",
+      "body": "Gideon admits striking Carl with the stone, moving Noah's bag through the blood, and placing the stone inside. He volunteers that he folded the bag's orange rain cover around the stone with its torn corner inward. That detail was withheld from witnesses and agrees with the original collection note.",
+      "characters": ["gideon"]
+    }
+  ],
+  "reveals": [
+    {
+      "id": "noah-bag",
+      "characterId": "noah",
+      "level": "partial",
+      "topic": "Ask where he left his bag, or press for the argument's subject after inspecting the bag photographs",
+      "keywords": ["bag", "argument", "disagreement", "bench"],
+      "requires": { "all": ["W1"] },
+      "speech": "I left my bag under the bench when I walked off; when I returned it was beside Dad. He wanted me to pressure Amelia about the cottage transfer. That is what we argued over, not a plan to hurt him.",
+      "clueIds": ["W8"]
+    },
+    {
+      "id": "amelia-pressure",
+      "characterId": "amelia",
+      "level": "partial",
+      "topic": "Ask about the family pressure or cottage transfer after Noah explains the disagreement",
+      "keywords": ["pressure", "cottage", "transfer", "argument", "families"],
+      "requires": { "all": ["W8"] },
+      "speech": "Carl wanted Noah to get me involved in the cottage transfer. My father resisted that pressure. I was in town and cannot tell you who caused the injury; this only explains the argument.",
+      "clueIds": ["W10"]
+    },
+    {
+      "id": "sanjay-later",
+      "characterId": "sanjay",
+      "level": "full",
+      "topic": "Challenge his claim to have left immediately using the bridge timing and the separate appointment; ask who came later",
+      "keywords": ["later", "stay", "stayed", "woods", "path", "who", "saw"],
+      "requires": { "all": ["W4", "W5"] },
+      "speech": "I stayed behind the tool shed. Noah left toward the bridge; then Gideon came from the woods with his stick. After a cry, I saw Gideon bent over the bag with his gray coat folded over his arm. I did not see a blow, and I hid this because he is my employer.",
+      "clueIds": ["W6"]
+    },
+    {
+      "id": "gideon-meeting",
+      "characterId": "gideon",
+      "level": "partial",
+      "topic": "Confront the denial of an appointment with the message exchange",
+      "keywords": ["appointment", "message", "meet", "study", "lake"],
+      "requires": { "all": ["W5"] },
+      "speech": "I agreed to talk about the cottage and those old papers. I did walk toward the lake, so my claim about staying in the study was not true. I turned back; I am not admitting an attack.",
+      "clueIds": ["W9"]
+    },
+    {
+      "id": "gideon-account",
+      "characterId": "gideon",
+      "level": "full",
+      "topic": "After his admitted appointment, confront the corrected sighting, bag and stone observations, and documented pressure; ask for the full account or responsibility",
+      "keywords": ["truth", "explain", "confess", "killed", "stone", "staged", "full account"],
+      "requires": { "all": ["W1", "W2", "W5", "W6", "W7", "W9"] },
+      "speech": "I struck Carl with the stone after he threatened me again. I moved Noah's bag through the blood and put the stone inside to point suspicion away from me. I folded its orange rain cover around the stone, torn corner inward; that detail matches your withheld collection note.",
+      "clueIds": ["W-CONFESSION"],
+      "confession": true
+    }
+  ],
+  "leads": [
+    {
+      "id": "bridge-record",
+      "title": "Check the path timings",
+      "description": "Compare the existing footbridge recording with the witness and emergency-call times.",
+      "keywords": ["bridge", "timing", "camera", "path"],
+      "requires": {},
+      "speech": "Continuous footage puts Noah on the bridge from 16:08 until he runs back at 16:12. His call is at 16:15. Compare that interval with the witness's account; it does not tell us the exact injury time by itself.",
+      "clueIds": ["W4"]
+    },
+    {
+      "id": "appointment-record",
+      "title": "Check the arranged meeting",
+      "description": "Review the already-authorized victim-phone extraction for an appointment near the lake.",
+      "keywords": ["appointment", "phone", "message", "meeting"],
+      "requires": { "any": ["W1", "W3", "W4"] },
+      "speech": "Carl sent a morning message to Gideon's verified number arranging the lake bench at 16:10 to discuss papers and cottage terms. The reply agrees to talk there. That contradicts the denial of an appointment, not proof of the fatal act.",
+      "clueIds": ["W5"]
+    },
+    {
+      "id": "estate-ledger",
+      "title": "Follow the cottage terms",
+      "description": "Compare the previously obtained estate ledger with the existing message thread.",
+      "keywords": ["ledger", "cottage", "payment", "papers", "terms"],
+      "requires": { "all": ["W5"] },
+      "speech": "The ledger records repeated payments to Carl alongside his rent-free cottage. His messages threaten to publish old financial papers unless Gideon transfers the cottage outright. That is documented pressure; it does not establish an attack.",
+      "clueIds": ["W7"]
+    }
+  ],
+  "resolution": {
+    "culpritId": "gideon",
+    "proofGroups": [["W1"], ["W2"], ["W4"], ["W5"], ["W6"]],
+    "confessionId": "W-CONFESSION",
+    "reconstruction": "Gideon Ward caused Carl Bennett's death with the landscaping stone after their arranged meeting. The message exchange contradicts his alibi, and Sanjay's corrected account places him at the bag after the cry while Noah had gone toward the bridge. The stone is consistent with the injury; the underside smear and witness account support moving Noah's bag beside the body and placing the stone inside. Noah's argument and bloodied sleeves made him an obvious suspect, but neither establishes the fatal act. The cottage messages provide a motive through pressure over old papers. This is an evidence-backed reconstruction of the act and planted scene, not a legal verdict or proof of every event in the families' past."
+  },
+  "partnerAlert": {
+    "afterClueCount": 2,
+    "message": "The timings deserve a closer look. Call me when you want to compare the existing records."
+  }
+}

@@ -1,6 +1,6 @@
-# Grange House: first case bible (draft)
+# Grange House: first case bible
 
-**Status:** Review draft, not approved for implementation. Contains the full solution.
+**Status:** Implemented as immutable `grange-house:1`. Contains the full solution. The original discussion draft below is retained as rationale; [the published pack](../../cases/grange-house.json) is authoritative. The implemented confession holdback is the two half-hitches with the cord tail beneath the chair, not the earlier candidate silverware location. See [multi-case validation](catalog-validation.md) for current checks. The pack was not changed while adding the new investigations.
 
 **Source:** Contemporary, standalone adaptation of Arthur Conan Doyle's [“The Adventure of the Abbey Grange”](https://www.gutenberg.org/cache/epub/108/pg108-images.html) from [*The Return of Sherlock Holmes*](https://www.gutenberg.org/ebooks/108). Credit the source in the case details and end credits. Sherlock Holmes and Watson are not characters in the game.
 

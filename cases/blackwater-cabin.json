@@ -1,0 +1,339 @@
+{
+  "schemaVersion": 1,
+  "id": "blackwater-cabin",
+  "version": 1,
+  "title": "Blackwater Cabin",
+  "subtitle": "A notebook, a missing box, and an old voyage",
+  "setting": "A small Sussex boatyard, present day",
+  "duration": "15–30 minutes",
+  "difficulty": "Intermediate",
+  "source": {
+    "title": "The Adventure of Black Peter",
+    "author": "Arthur Conan Doyle",
+    "url": "https://www.gutenberg.org/ebooks/108",
+    "adaptation": "A standalone contemporary adaptation with original names, records, and scene-staging details."
+  },
+  "partnerId": "detective",
+  "briefing": "Retired skipper Victor Sloane was found dead in his private cabin at Blackwater boatyard. A heavy boat-hook lies nearby, the door is damaged, and a blood-marked notebook belongs to Elias Reed, who recently argued with him. Establish who caused the death and whether the apparent break-in tells the whole story. You are reviewing the next day's assembled scene file, not ordering instant laboratory results.",
+  "openingFacts": [
+    "The caretaker reported a sharp crash at approximately 21:14; the emergency call was logged at 21:22.",
+    "The initial scene file records a head injury, a heavy boat-hook, and damage around the cabin door.",
+    "A notebook marked E.R. was recovered beside the desk. Its owner is available for interview."
+  ],
+  "characters": [
+    {
+      "id": "detective",
+      "name": "Detective Rowan",
+      "role": "Investigative partner",
+      "initials": "DR",
+      "initial": true,
+      "voice": "charles",
+      "avatar": "/assets/avatars/grange-house-detective.png",
+      "bio": "Your partner checks bounded records and helps you compare discovered observations.",
+      "facts": [
+        "I know the briefing and your discovered evidence only.",
+        "I can retrieve the already-collected visitor, crew, and document records when their leads become available.",
+        "I must not guess a culprit or volunteer an interpretation."
+      ],
+      "topics": [
+        "Where should I begin?",
+        "Check the old crew records",
+        "Compare the visitor timings"
+      ],
+      "fallbackReply": "Start with the cabin photographs and ask each witness what they personally saw. I can help follow an available record lead."
+    },
+    {
+      "id": "elias",
+      "name": "Elias Reed",
+      "role": "Visitor and notebook owner",
+      "initials": "ER",
+      "initial": true,
+      "voice": "paul",
+      "avatar": "/assets/avatars/blackwater-cabin-elias.png",
+      "bio": "A researcher who came to ask Sloane about his missing father.",
+      "facts": [
+        "The notebook is mine; I went to ask about my father's disappearance at sea.",
+        "Sloane became angry and I left. I did not kill him.",
+        "I do not want my family's financial troubles repeated as if they prove anything."
+      ],
+      "topics": [
+        "When did you visit?",
+        "Why was your notebook there?",
+        "What were you researching?"
+      ],
+      "fallbackReply": "I argued with him, yes. My notebook being there does not tell you when I left. Please check the visit instead of guessing."
+    },
+    {
+      "id": "liv",
+      "name": "Liv Mercer",
+      "role": "Boatyard caretaker",
+      "initials": "LM",
+      "initial": true,
+      "voice": "anna",
+      "avatar": "/assets/avatars/blackwater-cabin-liv.png",
+      "bio": "Lives above the workshop and made the emergency call.",
+      "facts": [
+        "I heard a crash around 21:14 and called for help at 21:22.",
+        "Initially I said I stayed upstairs until I found Sloane.",
+        "I was frightened of Sloane and worried about losing my accommodation.",
+        "I did not see the fatal blow."
+      ],
+      "topics": ["What did you hear?", "Did anyone leave the cabin?", "Why wait before calling?"],
+      "fallbackReply": "I heard the crash but did not see the attack. The eight minutes before my call were frightening and confused."
+    },
+    {
+      "id": "dena",
+      "name": "Dena Shaw",
+      "role": "Boatyard manager",
+      "initials": "DS",
+      "initial": true,
+      "voice": "alba",
+      "avatar": "/assets/avatars/blackwater-cabin-dena.png",
+      "bio": "Keeps visitor bookings and the retired skipper's archived crew paperwork.",
+      "facts": [
+        "The camera covers the yard entrance, not the inside of the cabin.",
+        "Sloane kept old voyage paperwork in a metal document box.",
+        "I did not see the incident and cannot identify a killer from a visitor record."
+      ],
+      "topics": [
+        "What records are available?",
+        "Who used the document box?",
+        "Did you see the visitors?"
+      ],
+      "fallbackReply": "The records can establish a visit, not what happened inside. Ask Rowan to retrieve the relevant file once you have an observation to follow."
+    },
+    {
+      "id": "rafe",
+      "name": "Rafe Cole",
+      "role": "Former crew member",
+      "initials": "RC",
+      "initial": false,
+      "voice": "michael",
+      "avatar": "/assets/avatars/blackwater-cabin-rafe.png",
+      "bio": "An old colleague connected to Sloane through the crew archive.",
+      "facts": [
+        "I worked on Sloane's coastal salvage vessel years ago.",
+        "Initially I deny visiting Blackwater on the evening he died.",
+        "I have handled boat-hooks at work, as many boatyard workers have. That is not proof of an attack."
+      ],
+      "topics": [
+        "Did you visit that evening?",
+        "What was your business with Sloane?",
+        "Explain the caretaker's account"
+      ],
+      "fallbackReply": "I knew Sloane years ago. If you want to challenge my account of that evening, bring a record rather than a guess."
+    }
+  ],
+  "clues": [
+    {
+      "id": "B1",
+      "title": "Splinters over a blood smear",
+      "exhibitLabel": "Cabin door photographs",
+      "kind": "physical",
+      "source": "Existing scene photographs and entry-damage note",
+      "body": "Fresh timber splinters from the damaged strike plate rest on top of a blood smear inside the doorway. The cabin key was in Sloane's pocket; the outside handle shows no pry marks. The photographs do not identify who damaged the door.",
+      "characters": ["liv", "rafe"],
+      "inspectable": true,
+      "requires": {}
+    },
+    {
+      "id": "B2",
+      "title": "Blood on the closed notebook",
+      "exhibitLabel": "Desk and notebook photographs",
+      "kind": "physical",
+      "source": "Recovered notebook and scene photograph",
+      "body": "The closed notebook is marked E.R. Small blood spots are on its cover; its inside pages are clean. It contains questions about a missing passenger and voyage dates, not a record of an attack.",
+      "characters": ["elias"],
+      "inspectable": true,
+      "requires": {}
+    },
+    {
+      "id": "B3",
+      "title": "Two cups and a patched pouch",
+      "exhibitLabel": "Cabin table photograph",
+      "kind": "physical",
+      "source": "Table inventory photographed before collection",
+      "body": "Two used coffee cups sit on the table beside a tobacco pouch with a blue stitched anchor patch. No pipe was found among Sloane's belongings. The pouch has no legible name, and the cups alone do not identify a visitor.",
+      "characters": ["dena", "rafe"],
+      "inspectable": true,
+      "requires": {}
+    },
+    {
+      "id": "B4",
+      "title": "A visit in the hotel record",
+      "kind": "record",
+      "source": "Already-collected hotel corridor footage and reception log",
+      "body": "The hotel footage shows Elias entering at 20:06 and remaining in its lobby and dining area until 21:40. The yard record places his earlier visit at 19:10–19:36. This conflicts with his presence at the reported 21:14 crash; it does not explain the later visitor.",
+      "characters": ["elias"]
+    },
+    {
+      "id": "B5",
+      "title": "Crew photograph and visitor name",
+      "kind": "record",
+      "source": "Boatyard crew archive and booking file",
+      "body": "The archive names Rafe Cole as Sloane's former deckhand. A dated crew photograph shows him carrying a pouch with the same blue anchor patch. A booking in his name requested an evening meeting with Sloane. A matching pouch is a lead, not unique identification.",
+      "characters": ["dena", "rafe"],
+      "unlockCharacters": ["rafe"]
+    },
+    {
+      "id": "B6",
+      "title": "Arrival before the crash",
+      "kind": "record",
+      "source": "Already-collected yard footage and visitor sign-in",
+      "body": "Entrance footage and the signed visitor entry place Rafe in the yard at 20:58. Footage shows him leaving at 21:18 carrying a rectangular object. The camera cannot see the cabin interior.",
+      "characters": ["rafe", "liv"]
+    },
+    {
+      "id": "B7",
+      "title": "Liv's corrected doorway account",
+      "kind": "testimony",
+      "source": "Liv Mercer's corrected interview",
+      "body": "Liv says she went to the stair window at the crash and saw Rafe at the open cabin door holding the boat-hook, then carrying a metal box away. She recognized a former worker she had met before. She did not see the blow. Her initial claim of staying away from the window was false, so compare this with the records and scene.",
+      "characters": ["liv", "rafe"]
+    },
+    {
+      "id": "B8",
+      "title": "The missing document box",
+      "kind": "record",
+      "source": "Existing property inventory and archive scan",
+      "body": "The metal box visible on the shelf in last month's inventory is absent from the crime scene. A previously scanned cover sheet lists a 2009 passenger recovery and a payment dispute. The original contents and removal are not established by the scan alone.",
+      "characters": ["dena", "elias", "rafe"]
+    },
+    {
+      "id": "B9",
+      "title": "Elias's earlier visit",
+      "kind": "testimony",
+      "source": "Elias Reed's interview",
+      "body": "Elias says he visited at 19:10, argued about his father's disappearance, and left the notebook on the desk before returning to his hotel. This is his account; the independent visitor and hotel records corroborate its timing.",
+      "characters": ["elias"]
+    },
+    {
+      "id": "B10",
+      "title": "Rafe admits the meeting",
+      "kind": "testimony",
+      "source": "Rafe Cole's partial admission",
+      "body": "Rafe admits attending the late meeting to demand money connected to an old voyage. He still denies causing the death or taking the document box. Attendance and motive alone do not prove a fatal act.",
+      "characters": ["rafe"]
+    },
+    {
+      "id": "B11",
+      "title": "Boat-hook and injury note",
+      "exhibitLabel": "Collected tool and preliminary medical note",
+      "kind": "physical",
+      "source": "Next-day preliminary injury assessment and scene inventory",
+      "body": "The documented injury is consistent with a blunt strike by the heavy end of the boat-hook found beside Sloane. Its absence from the wall rack is recorded. The note does not identify its user or determine whether a confrontation was defensive.",
+      "characters": ["elias", "rafe"],
+      "inspectable": true,
+      "requires": {}
+    },
+    {
+      "id": "B-CONFESSION",
+      "title": "Rafe's verified account",
+      "kind": "confession",
+      "source": "Rafe's admission checked against a withheld collection note",
+      "body": "Rafe admits striking with the boat-hook, taking the box, and damaging the door afterward. He describes breaking the pale wooden latch wedge and putting its two pieces inside the empty kettle. That location was withheld from witnesses and matches the original collection note.",
+      "characters": ["rafe"]
+    }
+  ],
+  "reveals": [
+    {
+      "id": "elias-visit",
+      "characterId": "elias",
+      "level": "partial",
+      "topic": "Ask when he visited or challenge the notebook's significance",
+      "keywords": ["visit", "notebook", "when", "father"],
+      "requires": { "all": ["B2"] },
+      "speech": "I visited at 19:10 and left after our argument. I left that notebook on his desk by mistake. I returned to my hotel; please compare the records before treating the blood on its cover as proof I was there later.",
+      "clueIds": ["B9"]
+    },
+    {
+      "id": "dena-box",
+      "characterId": "dena",
+      "level": "partial",
+      "topic": "Ask about the document box or old voyage records",
+      "keywords": ["box", "document", "voyage"],
+      "requires": { "all": ["B5"] },
+      "speech": "The metal box held Sloane's old voyage papers. There is an inventory photograph and a scanned cover sheet, both already in the collected archive. Rowan can compare them with the shelf in the scene photographs.",
+      "clueIds": []
+    },
+    {
+      "id": "liv-window",
+      "characterId": "liv",
+      "level": "full",
+      "topic": "Challenge the initial window account using the door observation and later visitor record; ask what she saw after the crash",
+      "keywords": ["window", "leave", "leaving", "crash", "saw", "door"],
+      "requires": { "all": ["B1", "B6"] },
+      "speech": "I did go to the stair window at the crash. I saw Rafe at the cabin door holding the boat-hook, and then leaving with Sloane's metal box. I never saw the strike; I hid what I saw because I was scared and dependent on this job.",
+      "clueIds": ["B7"]
+    },
+    {
+      "id": "rafe-meeting",
+      "characterId": "rafe",
+      "level": "partial",
+      "topic": "Confront his denial of the evening visit with the arrival record",
+      "keywords": ["visit", "meeting", "record", "arrival", "money"],
+      "requires": { "all": ["B6"] },
+      "speech": "All right, I came for the meeting. I wanted money over something from our old voyage. Being there does not mean I killed him, and I am not agreeing to your account of what happened inside.",
+      "clueIds": ["B10"]
+    },
+    {
+      "id": "rafe-account",
+      "characterId": "rafe",
+      "level": "full",
+      "topic": "After the admitted meeting, confront him with the corrected witness, damaged door, and weapon observations; ask for the full account or responsibility",
+      "keywords": ["truth", "explain", "confess", "killed", "hook", "staged", "full account"],
+      "requires": { "all": ["B1", "B6", "B7", "B10", "B11"] },
+      "speech": "Sloane came at me with a knife; I struck him with the boat-hook. I took the box and damaged the door to look like a break-in. I snapped the pale latch wedge and hid its two pieces in the empty kettle; your withheld collection note can check that.",
+      "clueIds": ["B-CONFESSION"],
+      "confession": true
+    }
+  ],
+  "leads": [
+    {
+      "id": "hotel-records",
+      "title": "Check the earlier visitor",
+      "description": "Compare the notebook owner's visit with the already-collected hotel and yard records.",
+      "keywords": ["hotel", "earlier visitor", "elias", "visitor timings"],
+      "requires": { "all": ["B2"] },
+      "speech": "The records place Elias in the yard at 19:10 to 19:36 and back at the hotel by 20:06. Lobby and dining footage keep him there through 21:40. Those are independent timings, not proof about whoever came afterward.",
+      "clueIds": ["B4"]
+    },
+    {
+      "id": "crew-archive",
+      "title": "Trace the table belongings",
+      "description": "Compare the pictured pouch with existing crew photographs and visitor bookings.",
+      "keywords": ["crew", "pouch", "anchor", "table belongings"],
+      "requires": { "all": ["B3"] },
+      "speech": "The crew archive names Rafe Cole, a former deckhand. One photograph shows the same blue anchor patch on his pouch, and his name appears on an evening booking. We can now interview him; a patch alone does not prove an attack.",
+      "clueIds": ["B5"]
+    },
+    {
+      "id": "late-visitor",
+      "title": "Reconcile the later visit",
+      "description": "Match the newly identified visitor's booking to the collected entrance recording.",
+      "keywords": ["late", "arrival", "gate", "entrance", "later visit"],
+      "requires": { "all": ["B5"] },
+      "speech": "The sign-in and entrance footage place Rafe here from 20:58 until 21:18, bracketing the reported crash. He carries a rectangular object out. The camera does not show the cabin or the fatal act.",
+      "clueIds": ["B6"]
+    },
+    {
+      "id": "box-inventory",
+      "title": "Compare the document inventory",
+      "description": "Review the existing shelf inventory and scanned voyage cover sheet, not new laboratory work.",
+      "keywords": ["box", "inventory", "document", "voyage"],
+      "requires": { "all": ["B5"] },
+      "speech": "The metal box in last month's shelf inventory is missing from the scene. Its scanned cover sheet concerns a 2009 passenger recovery and a payment dispute. That supplies context, but the contents and who removed it need corroboration.",
+      "clueIds": ["B8"]
+    }
+  ],
+  "resolution": {
+    "culpritId": "rafe",
+    "proofGroups": [["B1"], ["B6"], ["B7"], ["B11"]],
+    "confessionId": "B-CONFESSION",
+    "reconstruction": "Rafe Cole caused Victor Sloane's death with the heavy boat-hook during their late meeting. The entrance record places him there at the crash, and Liv's corrected account connects him to the tool and missing box immediately afterward. Splinters over the blood smear support damage to the door after the injury, not an initial forced entry. Elias's notebook was left during an earlier visit; blood landing on it later made it misleading. Rafe removed the document box and damaged the door to suggest a break-in. His claim that Sloane attacked him is an account to assess separately, not a legal verdict established by this reconstruction."
+  },
+  "partnerAlert": {
+    "afterClueCount": 2,
+    "message": "I can help separate the visitor timings. Call me when you are ready to compare the records."
+  }
+}
