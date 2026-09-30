@@ -9,11 +9,61 @@ export class VoiceClient {
     this.ready = false;
     this.stopped = false;
     this.nextPlayback = 0;
+    this.state = { status: 'idle', caption: '', microphone: { receiving: false, level: 0 } };
+    this.meterPeak = 0;
+    this.lastMeterAt = 0;
+  }
+
+  publish(state) {
+    if (this.stopped) return;
+    this.state = { ...this.state, ...state };
+    this.onState(this.state);
+  }
+
+  receiveInput(data) {
+    if (this.stopped || !data.byteLength) return;
+    this.lastInputAt = Date.now();
+    if (!this.ready || this.socket?.readyState !== WebSocket.OPEN) return;
+    this.send({
+      type: 'input.audio',
+      audio: btoa(String.fromCharCode(...new Uint8Array(data))),
+    });
+    const samples = new Int16Array(data);
+    let energy = 0;
+    for (const sample of samples) energy += (sample / 32768) ** 2;
+    this.meterPeak = Math.max(this.meterPeak, Math.sqrt(energy / samples.length));
+    // Local amplitude only, at most five UI updates per second. Never retain audio.
+    if (this.lastInputAt - this.lastMeterAt >= 200) {
+      this.publish({
+        microphone: { receiving: true, level: Math.min(100, Math.round(this.meterPeak * 500)) },
+      });
+      this.meterPeak = 0;
+      this.lastMeterAt = this.lastInputAt;
+    }
+  }
+
+  checkInput(now = Date.now()) {
+    if (this.ready && !this.stopped && now - (this.lastInputAt || this.readyAt) > 6000)
+      this.onError(
+        'Microphone audio stopped reaching the call. Check your browser microphone input, then start the call again.',
+      );
+  }
+
+  waitForAnswer() {
+    if (this.answerTimer || (this.current && !this.current.interrupted)) return;
+    this.answerTimer = setTimeout(() => {
+      this.answerTimer = null;
+      if (!this.stopped)
+        this.onError(
+          'Your speech was detected, but no reply arrived within 30 seconds. Please start the call again.',
+        );
+    }, 30000);
+    this.answerTimer.unref?.();
   }
 
   async connect(credentials) {
     this.credentials = credentials;
-    this.onState({ status: 'connecting', caption: '' });
+    this.publish({ status: 'connecting', caption: '' });
     this.context = new AudioContext({ sampleRate: 24000 });
     if (this.context.sampleRate !== 24000)
       throw new Error(
@@ -21,28 +71,39 @@ export class VoiceClient {
       );
     await this.context.audioWorklet.addModule('/pcm-processor.js');
     this.stream = await navigator.mediaDevices.getUserMedia({
-      audio: { echoCancellation: true, noiseSuppression: false },
+      audio: { echoCancellation: true, noiseSuppression: false, autoGainControl: true },
     });
     if (this.stopped) {
       this.stream.getTracks().forEach((track) => track.stop());
       return;
     }
-    const input = this.context.createMediaStreamSource(this.stream);
-    const worklet = new AudioWorkletNode(this.context, 'pcm-processor');
-    const mute = this.context.createGain();
-    mute.gain.value = 0;
-    input.connect(worklet).connect(mute).connect(this.context.destination);
-    worklet.port.onmessage = ({ data }) => {
-      if (this.ready && this.socket?.readyState === WebSocket.OPEN)
-        this.send({
-          type: 'input.audio',
-          audio: btoa(String.fromCharCode(...new Uint8Array(data))),
-        });
+    this.input = this.context.createMediaStreamSource(this.stream);
+    this.worklet = new AudioWorkletNode(this.context, 'pcm-processor');
+    this.mute = this.context.createGain();
+    this.mute.gain.value = 0;
+    this.input.connect(this.worklet).connect(this.mute).connect(this.context.destination);
+    this.worklet.port.onmessage = ({ data }) => this.receiveInput(data);
+    for (const track of this.stream.getAudioTracks()) {
+      track.onended = () => {
+        if (!this.stopped) this.onError('The microphone disconnected. Check your input and retry.');
+      };
+    }
+    this.context.onstatechange = () => {
+      if (this.ready && !this.stopped && this.context.state !== 'running')
+        this.onError('The browser paused call audio. Return to this tab and start the call again.');
     };
     await this.context.resume();
+    if (this.stopped) return;
+    this.inputTimer = setInterval(() => this.checkInput(), 1000);
+    this.inputTimer.unref?.();
     const url = new URL('wss://agents.assemblyai.com/v1/ws');
     url.searchParams.set('token', credentials.token);
     this.socket = new WebSocket(url);
+    this.connectionTimer = setTimeout(() => {
+      if (!this.ready && !this.stopped)
+        this.onError('The voice connection did not become ready. Please retry the call.');
+    }, 20000);
+    this.connectionTimer.unref?.();
     this.socket.addEventListener('open', () =>
       this.send({ type: 'session.update', session: { agent_id: credentials.agentId } }),
     );
@@ -57,8 +118,12 @@ export class VoiceClient {
     this.socket.addEventListener('error', () =>
       this.onError('The voice connection failed. Please start the call again.'),
     );
-    this.socket.addEventListener('close', () => {
-      if (!this.stopped) this.onClose();
+    this.socket.addEventListener('close', ({ code }) => {
+      if (!this.stopped) {
+        if (code !== 1000)
+          this.onError(`The voice connection closed (${code}). Please start the call again.`);
+        else this.onClose();
+      }
     });
   }
 
@@ -70,17 +135,42 @@ export class VoiceClient {
     switch (message.type) {
       case 'session.ready':
         this.ready = true;
-        this.onState({ status: 'listening', caption: '' });
+        this.readyAt = Date.now();
+        clearTimeout(this.connectionTimer);
+        this.publish({ status: 'listening', caption: '' });
         break;
       case 'input.speech.started':
-        this.interrupt();
-        this.onState({ status: 'listening', caption: '' });
+        this.userTurnEnded = false;
+        clearTimeout(this.answerTimer);
+        this.answerTimer = null;
+        // Speech may be a back-channel, not an interruption. Only provider-confirmed
+        // interrupted events may discard the active reply and queued playback.
+        if (!this.current || this.current.interrupted)
+          this.publish({ status: 'listening', caption: '' });
+        break;
+      case 'transcript.user.delta':
+        if (!this.current || this.current.interrupted)
+          this.publish({ status: 'listening', caption: `You: ${message.text}` });
+        break;
+      case 'input.speech.stopped':
+        this.userTurnEnded = true;
+        if (!this.current || this.current.interrupted) {
+          this.publish({ status: 'thinking' });
+          this.waitForAnswer();
+        }
         break;
       case 'transcript.user':
-        this.onState({ status: 'listening', caption: `You: ${message.text}` });
+        this.userTurnEnded = true;
+        if (!this.current || this.current.interrupted) {
+          this.publish({ status: 'thinking', caption: `You: ${message.text}` });
+          this.waitForAnswer();
+        }
         break;
       case 'reply.started': {
-        this.onState({ status: 'thinking', caption: '' });
+        this.userTurnEnded = false;
+        clearTimeout(this.answerTimer);
+        this.answerTimer = null;
+        this.publish({ status: 'thinking', caption: '' });
         this.current = {
           id: message.reply_id,
           words: [],
@@ -111,7 +201,7 @@ export class VoiceClient {
         if (!reply || reply.interrupted) break;
         reply.words.push({ text: message.delta, end: message.end_ms });
         reply.caption += message.delta;
-        this.onState({ status: 'speaking', caption: reply.caption });
+        this.publish({ status: 'speaking', caption: reply.caption });
         break;
       }
       case 'transcript.agent': {
@@ -119,7 +209,7 @@ export class VoiceClient {
         if (!reply) break;
         reply.text = message.text;
         reply.final = true;
-        reply.interrupted ||= Boolean(message.interrupted);
+        if (message.interrupted) this.interrupt(reply);
         this.finish(reply);
         break;
       }
@@ -170,7 +260,7 @@ export class VoiceClient {
     source.start(this.nextPlayback);
     clearTimeout(reply.waitTimer);
     this.nextPlayback += buffer.duration;
-    this.onState({ status: 'speaking', caption: reply.caption });
+    this.publish({ status: 'speaking', caption: reply.caption });
   }
 
   interrupt(reply = this.current) {
@@ -196,11 +286,16 @@ export class VoiceClient {
       }
     }
     this.nextPlayback = this.context?.currentTime || 0;
+    if (this.current === reply) {
+      if (this.userTurnEnded) this.waitForAnswer();
+      this.publish({ status: this.userTurnEnded ? 'thinking' : 'listening', caption: '' });
+    }
     this.finish(reply);
   }
 
   finish(reply) {
-    if (reply.acknowledged || !reply.done || !reply.final || reply.sources.size) return;
+    if (this.stopped || reply.acknowledged || !reply.done || !reply.final || reply.sources.size)
+      return;
     clearTimeout(reply.waitTimer);
     if (!reply.interrupted && reply.startTime === null) {
       this.onError('The reply contained no playable audio. Please retry the call.');
@@ -212,27 +307,39 @@ export class VoiceClient {
     Promise.resolve(
       this.onHeard({ text, interrupted: reply.interrupted, leaseId: this.credentials.leaseId }),
     ).catch((error) => this.onError(error.message));
-    this.onState({ status: 'listening', caption: '' });
     this.replies.delete(reply.id);
-    if (this.current === reply) this.current = null;
+    if (this.current === reply) {
+      this.current = null;
+      this.publish({ status: this.answerTimer ? 'thinking' : 'listening', caption: '' });
+    }
   }
 
   stop() {
     if (this.stopped) return;
     this.stopped = true;
     this.ready = false;
+    clearTimeout(this.connectionTimer);
+    clearTimeout(this.answerTimer);
+    clearInterval(this.inputTimer);
     for (const reply of this.replies.values()) clearTimeout(reply.waitTimer);
     this.send({ type: 'session.end' });
     const socket = this.socket;
     if (socket?.readyState === WebSocket.CONNECTING) socket.close();
     else setTimeout(() => socket?.close(), 500);
     for (const source of this.sources) {
+      source.onended = null;
       try {
         source.stop();
       } catch {}
     }
     this.sources.clear();
-    this.stream?.getTracks().forEach((track) => track.stop());
+    if (this.worklet) this.worklet.port.onmessage = null;
+    for (const node of [this.input, this.worklet, this.mute]) node?.disconnect();
+    this.stream?.getTracks().forEach((track) => {
+      track.onended = null;
+      track.stop();
+    });
+    if (this.context) this.context.onstatechange = null;
     this.context?.close().catch(() => {});
   }
 }

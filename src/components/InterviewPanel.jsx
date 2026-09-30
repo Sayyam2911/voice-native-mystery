@@ -15,7 +15,10 @@ const callStates = {
     label: 'Connecting the call',
     detail: 'Allow microphone access if your browser asks.',
   },
-  listening: { label: 'Your turn', detail: 'The microphone is live. Speak naturally.' },
+  listening: {
+    label: 'Your turn',
+    detail: 'Ask out loud. The input meter should move as you speak.',
+  },
   thinking: { label: 'Considering your question', detail: 'Your contact is preparing a reply.' },
   speaking: { label: 'Speaking', detail: 'You can interrupt—just start talking.' },
 };
@@ -41,6 +44,8 @@ export function InterviewPanel({
   const active = game.state.status === 'active';
   const partner = character.id === game.case.partnerId;
   const state = callStates[voice.status] || callStates.idle;
+  const microphoneLevel = voice.microphone?.level || 0;
+  const elapsedLabel = `${String(Math.floor(elapsed / 60)).padStart(2, '0')}:${String(elapsed % 60).padStart(2, '0')}`;
   const observations = game.clues.filter((clue) => clue.characters?.includes(character.id));
 
   useEffect(() => {
@@ -114,10 +119,30 @@ export function InterviewPanel({
           </p>
         </div>
         {connected && (
-          <span className="call-timer" aria-label="Elapsed call time">
-            {String(Math.floor(elapsed / 60)).padStart(2, '0')}:
-            {String(elapsed % 60).padStart(2, '0')}
-          </span>
+          <>
+            <span className="call-timer" aria-label="Elapsed call time">
+              {elapsedLabel}
+            </span>
+            <div className="call-input">
+              <span>Microphone input</span>
+              <div
+                className="call-input-meter"
+                role="meter"
+                aria-label="Microphone input level"
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={microphoneLevel}
+                aria-valuetext={microphoneLevel ? 'Audio detected' : 'Quiet input'}
+              >
+                <span style={{ width: `${microphoneLevel}%` }} />
+              </div>
+              <small>
+                {voice.microphone?.receiving
+                  ? 'Audio streaming · headphones recommended'
+                  : 'Waiting for microphone audio…'}
+              </small>
+            </div>
+          </>
         )}
         {active && (
           <button
@@ -144,7 +169,7 @@ export function InterviewPanel({
         <p className="call-privacy">
           <Mic size={12} aria-hidden="true" />
           {connected
-            ? 'Microphone connected · headphones recommended'
+            ? 'Speak clearly, then pause for a reply.'
             : connecting
               ? 'Waiting for the voice connection'
               : 'Your microphone stays off until you start the call.'}

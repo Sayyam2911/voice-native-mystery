@@ -198,7 +198,7 @@ test('resolved investigations retain the call transcript but cannot start anothe
   assert.doesNotMatch(html, /class="call-button/);
 });
 
-test('voice activity switches to thinking for a pending reply and back to listening on player speech', () => {
+test('voice activity stays with an active reply until a semantic interruption is confirmed', () => {
   const states = [];
   const client = new VoiceClient({
     onState: (s) => states.push(s.status),
@@ -206,12 +206,29 @@ test('voice activity switches to thinking for a pending reply and back to listen
     onError() {},
     onClose() {},
   });
-  client.context = { currentTime: 0 };
+  client.context = { currentTime: 0, close: async () => {} };
   client.event({ type: 'session.ready' });
   client.event({ type: 'reply.started', reply_id: 'reply' });
   client.event({ type: 'input.speech.started' });
-  assert.deepEqual(states, ['listening', 'thinking', 'listening']);
+  assert.deepEqual(states, ['listening', 'thinking']);
+  assert.equal(client.current.interrupted, false);
+  client.event({ type: 'reply.done', status: 'interrupted' });
+  assert.equal(states.at(-1), 'listening');
   assert.equal(client.current.interrupted, true);
+  client.stop();
+});
+
+test('connected calls display a measured input meter and a complete MM:SS timer', () => {
+  const html = renderCall({
+    voice: { status: 'listening', caption: '', microphone: { receiving: true, level: 42 } },
+  });
+  assert.match(html, /Elapsed call time">00:00<\/span>/);
+  assert.match(html, /role="meter"[^>]*aria-valuenow="42"/);
+  assert.match(html, /Audio streaming/);
+  assert.doesNotMatch(html, /The microphone is live/);
+  const waiting = renderCall({ voice: { status: 'listening', caption: '' } });
+  assert.match(waiting, /Waiting for microphone audio/);
+  assert.doesNotMatch(waiting, /Audio streaming/);
 });
 
 test('the evidence board is a memo boundary, isolated from unrelated voice caption updates', () => {

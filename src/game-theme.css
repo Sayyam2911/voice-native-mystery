@@ -838,6 +838,31 @@ body {
   font-variant-numeric: tabular-nums;
   color: #b8c59f;
   margin-top: 10px;
+  white-space: nowrap;
+}
+.call-input {
+  margin: 12px auto 0;
+  max-width: 220px;
+  font-size: 10px;
+  color: #bac5a6;
+}
+.call-input-meter {
+  height: 5px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #263222;
+  margin: 7px 0;
+}
+.call-input-meter span {
+  display: block;
+  height: 100%;
+  background: #bccd87;
+  transition: width 0.12s linear;
+}
+.call-input small {
+  font-size: 9px;
+  line-height: 1.5;
+  color: #a5af93;
 }
 .call-button {
   display: flex;
