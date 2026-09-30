@@ -24,6 +24,7 @@ This directory records the decisions and open questions for a reusable, voice-fi
 - [Dialogue response contract (draft)](dialogue-contract.md)
 - [Reusable case-pack contract](case-pack-contract.md)
 - [Submission implementation plan](implementation-plan.md)
+- [Implementation checkpoint and remaining gates](implementation-status.md)
 - [Named-voice protocol prototype](../prototype/voice-agent/README.md) (experiment, not final architecture)
 
 We will add data-model and implementation documents as those parts are discussed and decided.

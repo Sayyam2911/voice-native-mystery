@@ -1,153 +1,72 @@
-# Data model (working draft)
+# Data architecture — implemented baseline
 
-MongoDB Atlas is selected for first-release persistence. The proposed collection boundaries below are **not yet approved**. No admin panel and no raw-audio archive are required. The backend is the only database client; it exposes only player-visible projections.
+MongoDB Atlas is the selected production store. The following repository implementation exists, but real Atlas connectivity and transactions have not been exercised yet. The owner paused setup pending a Codex restart.
 
-## Proposed collections
+## Collections
 
-| Collection | Document boundary and important fields | Purpose |
+| Collection | Boundary | Important fields and indexes |
 | --- | --- | --- |
-| `case_packs` | One immutable document per `caseId` + `version`: public metadata, briefing, canonical truth, characters and their knowledge, evidence, disclosure rules, proof/confession rules, `schemaVersion` | Runtime case definition. Private fields never go directly to the browser or unrestricted dialogue model. Case source may be authored as versioned files and imported after validation; this workflow is open. |
-| `sessions` | One document per active visitor: opaque `sessionId`, `caseId`, `caseVersion`, status, selected character, discovered evidence/claims, character disclosure levels, lead state, state revision, timestamps, `expiresAt` | Small current-state snapshot for fast resume and rule checks. Do not copy the entire case or full conversation into it. |
-| `turns` | One document per player/character exchange: `sessionId`, ordered `turnNo`, character ID, player transcript, backend-approved reply, short speech segments and their delivery/acknowledgement states, timestamps, `expiresAt` | Text dialogue history and the link between spoken segments and candidate reveals. No raw microphone/synthesized audio, rejected model text, or full prompt log by default. |
-| `session_events` | One document per committed game event: `sessionId`, ordered event ID, type, source turn/segment or UI action, affected fact/claim/lead ID, timestamp, `expiresAt` | Traceable evidence discovery, character-state changes, partner findings, and accusation attempts. Helps explain why a board fact is present and rebuild state if needed. |
+| `case_packs` | One immutable, shared case version | `_id: id:version`, `id`, `version`, `schemaVersion`, authored pack, `contentHash`, `publishedAt`; unique `(id, version)` |
+| `sessions` | One anonymous visitor's current investigation | `_id`, `caseId`, `caseVersion`, `state`, `revision`, `turnCount`, `turnLock`, `activeVoice`, `voiceSeconds`, timestamps, `expiresAt` |
+| `turns` | One player/character exchange | `_id: sessionId:requestId`, `sessionId`, `turnNo`, `characterId`, `channel`, `voiceLeaseId`, `playerTranscript`, `approvedReply`, private `candidate`, `heardText`, `status`, `modelMode`, timestamps; unique `(sessionId, turnNo)` |
+| `session_events` | One sourced committed discovery or accusation attempt | `_id`, `sessionId`, `type`, `clueId` or accusation fields, `source`, `occurredAt`, `expiresAt`; index `(sessionId, occurredAt)` |
+| `limits` | Shared demo admission and voice-slot counters | Daily session count or numbered voice slot with owner lease ID and `expiresAt` |
+
+Sessions, turns, events, and limit records have TTL indexes on `expiresAt`. Backend expiry checks remain mandatory because TTL cleanup is asynchronous. Default session retention is a fixed 24 hours, not a sliding window.
 
 ```mermaid
 erDiagram
-    CASE_PACK ||--o{ SESSION : "caseId + version"
-    SESSION ||--o{ TURN : "sessionId"
-    SESSION ||--o{ SESSION_EVENT : "sessionId"
-    TURN |o--o{ SESSION_EVENT : "source turn or segment"
+    CASE_PACK ||--o{ SESSION : "caseId and caseVersion"
+    SESSION ||--o{ TURN : sessionId
+    SESSION ||--o{ SESSION_EVENT : sessionId
+    TURN |o--o{ SESSION_EVENT : "source.turnId"
 ```
 
-The ER diagram shows logical references, not SQL joins. A prepared case is read together and changes rarely, so embedding its related characters, clues, and rules in one versioned document is a reasonable starting point. Conversation turns and events grow during play, so they remain separate from the session snapshot. MongoDB documents have a [16 MiB limit](https://www.mongodb.com/docs/manual/data-modeling/embedding/); case-pack validation should check actual size. [Embedding versus references](https://www.mongodb.com/docs/manual/data-modeling/schema-design-process/map-relationships/) is chosen by read/write pattern, not by whether a field is conceptually a separate entity.
+These are logical references, not SQL joins. A case's characters, clues, and rules are embedded in a single pack; unbounded transcript/event growth is kept outside the small session snapshot.
 
-## Illustrative documents
+## Case definition versus visitor state
 
-These examples are deliberately small and use the unapproved Grange House draft. They show storage boundaries, **not** final field names, dialogue JSON, reveal predicates, or approved case prose.
+Validated authoring files in `cases/*.json` are automatically discovered and imported into Atlas. Import is idempotent for matching content, but rejects changes to an already-published version. New content needs a version bump; existing sessions keep their pinned version.
 
-### `case_packs`: one shared, immutable case version
+A pack contains both presentation material and private resolution/reveal rules. Privacy is enforced by server allowlist projections, not by merely naming a JSON field `private`. The browser receives safe metadata, unlocked people, discovered observations, neutral labels for unexamined exhibits, and permitted lead descriptions. It never imports the pack or reads Atlas directly.
+
+The state snapshot contains `knownClueIds`, `revealedIds`, `unlockedCharacterIds`, highest heard `characterLevels`, `completedLeadIds`, `selectedCharacterId`, status, optional resolution, and partner alert. The partner ID is supplied by the case; no particular character name or clue ID is built into the engine.
+
+## Exchange shape
 
 ```json
 {
-  "_id": "grange-house:v1",
-  "caseId": "grange-house",
-  "version": 1,
-  "schemaVersion": 1,
-  "status": "published",
-  "public": {
-    "title": "Grange House",
-    "briefing": "Elliot Vale was found dead at his estate...",
-    "initialCharacterIds": ["mara", "tessa", "owen"]
-  },
-  "private": {
-    "truth": { "fatalActorId": "jack", "stagingKind": "false_burglary" },
-    "characters": [
-      {
-        "id": "tessa",
-        "knowledgeFactIds": ["jack_at_scene", "staging_help"],
-        "revealIds": ["tessa_corrected_timeline"]
-      }
-    ],
-    "evidence": [
-      { "id": "E2", "boardText": "Mara was tied after the fatal injury" }
-    ],
-    "reveals": [
-      {
-        "id": "tessa_corrected_timeline",
-        "characterId": "tessa",
-        "level": "partial",
-        "requires": { "anyEvidenceIds": ["E2", "E3"] },
-        "approvedSpeech": "I arrived just after the blow and saw Jack holding the fireplace tool.",
-        "commitsClaimId": "E8"
-      }
-    ],
-    "resolution": {
-      "fatalActorId": "jack",
-      "proof": { "stagingAny": ["E2", "E3"], "presence": "E4", "aftermath": "E8" }
-    }
-  }
-}
-```
-
-The case pack is stored **once**, not copied for every player. The browser receives a filtered `public` projection plus only facts the visitor has discovered. The backend also filters `private` before building an LLM prompt: a suspect is never handed the entire canonical truth or the locked wording of a reveal. Updates create `v2`; existing sessions stay pinned to `v1` until they end. Whether version-controlled case files are imported into Atlas at deployment is still a choice to confirm.
-
-### `sessions`: one small state snapshot per visitor
-
-```json
-{
-  "_id": "sess_7f3...",
-  "caseRef": { "caseId": "grange-house", "version": 1 },
-  "status": "active",
-  "selectedCharacterId": "tessa",
-  "knownEvidenceIds": ["E2"],
-  "heardClaimIds": [],
-  "unlockedCharacterIds": ["mara", "tessa", "owen"],
-  "characterState": {
-    "tessa": { "disclosureLevel": "denial", "revealedIds": [] }
-  },
-  "leadState": { "pondSearch": "not_started" },
-  "revision": 6,
-  "createdAt": "2026-09-26T12:00:00Z",
-  "lastActiveAt": "2026-09-26T12:10:00Z",
-  "expiresAt": "2026-09-27T12:00:00Z"
-}
-```
-
-This is the game engine's fast current view, not an authorization token and not a transcript. `revision` is a proposed guard against stale concurrent updates. The temporary browser credential and its server-side validation are a separate security design. The fixed 24-hour expiry shown is only an example; a sliding recovery window would require coordinated retention updates.
-
-### `turns`: one text exchange, possibly interrupted
-
-```json
-{
-  "_id": "turn_12",
-  "sessionId": "sess_7f3...",
+  "_id": "visitor-id:request-id",
+  "sessionId": "visitor-id",
   "turnNo": 12,
-  "characterId": "tessa",
-  "playerTranscript": "The chair evidence says Mara was tied afterward. When did you enter?",
+  "characterId": "witness-id",
+  "channel": "voice",
+  "voiceLeaseId": "temporary-lease-id",
+  "playerTranscript": "When did you arrive?",
   "approvedReply": {
-    "text": "I was there earlier than I said. I saw Jack beside Elliot.",
+    "text": "I arrived earlier than I said. I saw the aftermath.",
     "segments": [
-      { "id": "12-1", "text": "I was there earlier than I said.", "playback": "heard" },
-      { "id": "12-2", "text": "I saw Jack beside Elliot.", "candidateClaimId": "E8", "playback": "pending" }
+      { "id": "visitor-id:request-id:0", "text": "I arrived earlier than I said.", "heard": true },
+      { "id": "visitor-id:request-id:1", "text": "I saw the aftermath.", "heard": false }
     ]
   },
-  "status": "partially_heard",
-  "createdAt": "2026-09-26T12:10:00Z",
-  "expiresAt": "2026-09-27T12:00:00Z"
+  "heardText": "I arrived earlier than I said.",
+  "status": "interrupted"
 }
 ```
 
-The transcript is inserted before the model call. The approved reply is written before it is spoken. `candidateClaimId` is server-side metadata, not a discovered board item: in this example, interruption before segment `12-2` finishes leaves `E8` undiscovered. We do not store raw microphone audio, synthesized audio, unapproved model text, or full prompts by default. Exact alignment of approved segments with AssemblyAI playback is an integration test still to pass.
+The browser projection does not include the private candidate reveal/lead metadata. Raw microphone audio, synthesized audio, rejected model output, and prompt logs are not archived by the application.
 
-### `session_events`: one committed change with provenance
+## Write order and concurrency
 
-```json
-{
-  "_id": "event_37",
-  "sessionId": "sess_7f3...",
-  "eventNo": 37,
-  "type": "claim_heard",
-  "claimId": "E8",
-  "source": { "kind": "spoken_segment", "turnId": "turn_12", "segmentId": "12-2" },
-  "occurredAt": "2026-09-26T12:10:23Z",
-  "expiresAt": "2026-09-27T12:00:00Z"
-}
-```
+1. Transactionally insert the transcript and acquire a bounded turn lock before calling the model.
+2. Outside the transaction, build case-scoped context and request one structured proposal.
+3. Validate the proposal and persist the approved response before returning text or streaming speech.
+4. Validate delivery acknowledgements against whole approved sentence prefixes. The current conservative implementation commits a critical reveal only after the entire short approved reply is heard; partial delivery is stored without unlocking its clues.
+5. Transactionally update heard state, discovery events, disclosure levels, and session snapshot. Repeat acknowledgements and turn request IDs are idempotent.
 
-This event illustrates the later state **after** segment `12-2` is heard; the turn example above illustrates the earlier interrupted state, so they are not simultaneous snapshots. Other event types could record inspected evidence, a partner investigation result, or an accusation. This is why a board card can identify its source. The event collection is proposed rather than approved; the simpler alternative is `sessions` plus `turns`, with less auditability. A state change and its provenance event must not diverge; the exact atomic-write/idempotency mechanism will be chosen during implementation.
+MongoDB transactions coordinate cross-document changes; the memory test repository uses a per-session queue. Transactions do not include network/model calls. Voice callback bindings are HMAC-signed and checked against the active lease and selected character, including retries.
 
-## Required write order and invariants
+The agreed finer-grained clue-bearing-sentence commitment remains a future refinement. The browser's actual word/audio alignment and Atlas transaction retry behavior remain live-test gates. Board pin positions are optional local presentation state in localStorage; they are not game progress or evidence.
 
-1. Save the recognized player transcript to a turn before invoking the dialogue model.
-2. Assemble model context from the pinned case version, authoritative session state, and relevant prior turns; do not blindly replay an ever-growing transcript.
-3. Save only the backend-approved spoken reply and any candidate reveal/segment mapping before returning speech to AssemblyAI.
-4. A reveal becomes discovered only after a valid playback acknowledgement; then record the event and update the session snapshot idempotently. An interrupted or stale turn must not commit an unheard clue.
-5. Every API read/write is scoped to the authenticated temporary session. The browser never queries Atlas directly or receives canonical truth.
-
-Proposed indexes: unique `(caseId, version)` on case packs; unique `(sessionId, turnNo)` on turns; unique `(sessionId, eventNo)` on events; session `_id` is already indexed. Expiring sessions, turns, and events may each have an `expiresAt` [TTL index](https://www.mongodb.com/docs/manual/core/index-ttl/). TTL deletion is asynchronous, so the backend must reject expired sessions itself. Case import must validate the document shape and all cross-referenced IDs before publication. Exact retention, atomic update/retry strategy, and token design remain open.
-
-## Questions to settle
-
-1. Should Atlas hold the private case packs at runtime, with version-controlled authoring files imported at deployment, or should case packs remain runtime files while only visitor data lives in Atlas?
-2. How long should an active session remain recoverable after the visitor leaves? A 24-hour window is a proposal, not a decision.
-3. Do we need the separate `session_events` collection from day one, or can we start with turns plus a session snapshot and add a durable event trail after the first playable slice?
+See [implementation-status.md](implementation-status.md) for limits, remaining gates, and restart instructions.

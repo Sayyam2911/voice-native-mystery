@@ -1,6 +1,6 @@
 # Casework — Voice Native Mystery
 
-A browser investigation built around prepared, immutable mysteries, flexible character dialogue, and server-authorized discoveries. The player interviews witnesses, examines a sourced evidence board, works with Detective Rowan, and reconstructs the event with supporting evidence.
+A browser investigation built around prepared, immutable mysteries, flexible character dialogue, and server-authorized discoveries. The player interviews witnesses from a dark investigation pinboard, examines observed evidence, works with a case's detective partner, and reconstructs the event with supporting evidence. Character portraits are fictional generated images bundled with the app.
 
 ## Structure
 
@@ -18,4 +18,4 @@ Use Node 22+. Install with `npm install`, configure server-only secrets in `.env
 
 The offline fixture is explicitly opt-in through `ALLOW_OFFLINE_DEMO=true` and is labeled in the UI. Production requires Atlas and real provider credentials. Audio is streamed for live processing and is not archived by the application.
 
-See [architecture/implementation-plan.md](architecture/implementation-plan.md) for delivery status. Additional cases use the same schema and rule engine; the catalog must not generate its core truth during play.
+See [architecture/implementation-status.md](architecture/implementation-status.md) for verified features and remaining deployment gates, and [architecture/implementation-plan.md](architecture/implementation-plan.md) for the staged plan. Additional cases use the same schema and rule engine; the catalog must not generate its core truth during play.

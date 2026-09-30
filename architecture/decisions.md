@@ -4,6 +4,8 @@ Record only decisions made with the project owner. Proposals remain open until d
 
 ## Accepted scope
 
+September 30 refinement: the owner requested a darker, game-first photo/pin investigation wall rather than a dashboard. Physical clues should state observations, with interpretive hints on request. The engine and UI remain case-independent; portrait and exhibit labels are case metadata. See the [checkpoint](implementation-status.md) for implemented behavior and remaining gaps.
+
 | Decision | Reason | Status |
 | --- | --- | --- |
 | Build a reusable multi-story application, with no fixed catalog-size requirement | Returning players should have different cases to solve; a few good cases are sufficient initially | Accepted |
