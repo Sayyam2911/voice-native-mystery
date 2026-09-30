@@ -2,6 +2,8 @@
 
 A browser investigation built around prepared, immutable mysteries, flexible character dialogue, and server-authorized discoveries. The player interviews witnesses from a dark investigation pinboard, examines observed evidence, works with a case's detective partner, and reconstructs the event with supporting evidence. Character portraits are fictional generated images bundled with the app.
 
+Interviews use an explicit voice call, not typed chat. The detective has a separate partner contact, away from case-subject pins; call transcripts and discovered observations remain available as read-only references. Selecting a person does not activate the microphone until the player starts the call.
+
 The catalog contains **Grange House**, **Blackwater Cabin**, and **The Willowmere Affair**, standalone contemporary adaptations of Arthur Conan Doyle mysteries. Each targets 15–30 minutes and has its own cast, observations, gated testimony, detective leads, and evidence-backed/earned-confession resolution. See [case sourcing](architecture/case-sourcing.md) for attribution and [validation](architecture/cases/catalog-validation.md) for checks; pacing still needs human playtesting.
 
 ## Structure

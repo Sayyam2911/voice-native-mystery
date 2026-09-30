@@ -8,7 +8,7 @@ The owner has approximately seven hours available and authorized implementation 
 - MongoDB Atlas for immutable case packs, anonymous 24-hour sessions, text turns, and sourced game events. Case authoring files stay versioned in the repository and are validated/imported into Atlas. No raw audio archive.
 - Configurable OpenAI-compatible model adapter. Initial free-tier candidate: Groq `qwen/qwen3.8-27b`, subject to live access/quality checks. Structured JSON is parsed before approved speech is streamed to AssemblyAI.
 - Backend gates all clue/claim commits and accusation outcomes. Voice replies remain short. Heard-reply acknowledgements must be validated against approved text; incomplete replies do not reveal hidden board items.
-- Anonymous opaque HttpOnly session cookies, server-only secrets, idempotent acknowledgements, fixed demo usage caps, visible failures, and typed-text fallback alongside voice.
+- Anonymous opaque HttpOnly session cookies, server-only secrets, idempotent acknowledgements, fixed demo usage caps, and visible failures. The owner subsequently selected a voice-only interview UI: retry a failed call, with board inspection/reconstruction still available, rather than a typed-text fallback.
 - Use per-visitor stored AssemblyAI agents only if necessary to bind callbacks reliably; do not share visitor dialogue state through a global character agent.
 
 ## Delivery order

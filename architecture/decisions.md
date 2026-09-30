@@ -8,6 +8,8 @@ September 30 content implementation: the owner delegated adding two investigatio
 
 September 30 refinement: the owner requested a darker, game-first photo/pin investigation wall rather than a dashboard. Physical clues should state observations, with interpretive hints on request. The engine and UI remain case-independent; portrait and exhibit labels are case metadata. See the [checkpoint](implementation-status.md) for implemented behavior and remaining gaps.
 
+September 30 voice-first refinement: the owner requested removing the detective from case-subject pins, improving unhovered portrait-label clarity, and removing typed chat. A separate partner contact and a call-first interview drawer now serve that presentation; server-side identity, rules, and persistence are unchanged.
+
 | Decision | Reason | Status |
 | --- | --- | --- |
 | Build a reusable multi-story application, with no fixed catalog-size requirement | Returning players should have different cases to solve; a few good cases are sufficient initially | Accepted |
@@ -40,7 +42,9 @@ September 30 refinement: the owner requested a darker, game-first photo/pin inve
 | Prefer AssemblyAI named voices over browser/device-provided voices | The project owner wants the named voices as part of the experience and development work; the owner confirms Voice Agent API access | Accepted |
 | Use AssemblyAI Voice Agent API named-voice sessions for browser speech, with one active selected character at a time | The live prototype worked for the owner, including player interruption and switching characters; the dashboard attributes $0.08285 of test usage to Voice Agent against a stated $150 allowance | Accepted for the first release; case-control validation remains |
 | Use a case board and explicit character selection, not an open-room speaker router | Keeps the current interview and its voice unambiguous; the board shows only discovered facts relevant to the selected character | Accepted |
-| Put the AI detective in the character list and let it request the player's attention | Keeps detective collaboration available without taking control of the current interview | Accepted |
+| Put the AI detective in the character list and let it request the player's attention | Keeps detective collaboration available without taking control of the current interview | Presentation superseded by the separate partner contact; attention requests remain accepted |
+| Separate the detective contact from case-related people on the evidence board | Distinguishes the player's collaborator from suspects and witnesses without changing the character/voice model | Accepted |
+| Make the player-facing interview voice-only, retaining read-only call transcripts and passive question suggestions | Voice is the primary interaction, not an optional mode alongside typed chat; an explicit call action preserves microphone consent | Accepted; supersedes the implementation default of a typed-text fallback |
 | Let the player interrupt a suspect's spoken response | Keeps interrogation conversational and responsive; the app must stop playback and handle the unfinished turn consistently | Accepted |
 | Commit a clue-bearing sentence only after its audio finishes playing | Prevents an interrupted, unheard claim from silently appearing on the evidence board; the player can ask again if cut off mid-sentence | Accepted |
 | Pair the detective's visual request with a brief spoken alert at the next quiet moment | Makes the partner feel present without speaking over the player or cutting off a suspect mid-sentence | Accepted |
