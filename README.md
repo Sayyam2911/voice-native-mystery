@@ -41,27 +41,46 @@ These are contemporary fictional adaptations of Arthur Conan Doyle stories. The 
 
 Sources: [The Return of Sherlock Holmes](https://www.gutenberg.org/ebooks/108), [The Adventures of Sherlock Holmes](https://www.gutenberg.org/ebooks/1661). Portraits and location artwork depict fictional people and scenes. [Asset provenance](public/assets/ATTRIBUTION.md).
 
-## How the AI fits
+## System overview
+
+The browser handles presentation and local audio. A modular backend owns case rules and session progress, while AssemblyAI handles live speech and Groq proposes bounded dialogue.
 
 ```mermaid
-flowchart LR
-    Player[Player in browser]
-    Voice[AssemblyAI Voice Agent<br/>Speech recognition and named voices]
-    Backend[Casework backend<br/>Case rules and response approval]
-    Model[Groq dialogue model<br/>Structured JSON proposal]
-    DB[(MongoDB Atlas<br/>Case versions and visitor progress)]
-    Player <-->|Live audio and transcript events| Voice
-    Voice <-->|Authenticated custom LLM callback| Backend
-    Player <-->|Board actions and playback acknowledgements| Backend
-    Backend <-->|Bounded context and proposal| Model
-    Backend <-->|Transactional state| DB
-    classDef client fill:#e7eee5,stroke:#45614a,color:#17271c;
-    classDef service fill:#e8edf6,stroke:#48638a,color:#152438;
-    classDef authority fill:#f5ead2,stroke:#9c7841,color:#352810;
-    class Player client;
-    class Voice,Model service;
-    class Backend,DB authority;
+flowchart TB
+    subgraph Browser[Player browser]
+        UI[React game<br/>Pinboard and voice interview]
+        Audio[Web Audio client<br/>PCM capture and playback]
+        UI <--> Audio
+    end
+    subgraph App[Casework modular Node backend]
+        API[HTTP API<br/>Session authorization]
+        Rules[Game service<br/>Evidence and resolution rules]
+        Dialogue[Dialogue adapter<br/>JSON validation and approval]
+        Callback[Voice callback<br/>Signed lease validation]
+        Repository[Repository<br/>Transactional document access]
+        API --> Rules
+        Callback --> Rules
+        Rules --> Dialogue
+        Rules --> Repository
+    end
+    Speech[AssemblyAI Voice Agent<br/>STT, turn detection, named TTS]
+    LLM[Groq<br/>Structured dialogue]
+    Atlas[(MongoDB Atlas)]
+    Packs[Versioned case JSON] -->|Validated idempotent import| Atlas
+    UI <-->|Same-origin HTTPS actions and acknowledgements| API
+    Audio <-->|Temporary-token WebSocket<br/>24 kHz PCM16 audio| Speech
+    Speech <-->|Bearer-authenticated streaming callback| Callback
+    Dialogue <-->|Permitted context and JSON proposal| LLM
+    Repository <--> Atlas
+    classDef player fill:#e7eee5,stroke:#45614a,color:#17271c;
+    classDef core fill:#f5ead2,stroke:#9c7841,color:#352810;
+    classDef external fill:#e8edf6,stroke:#48638a,color:#152438;
+    class UI,Audio player;
+    class API,Rules,Dialogue,Callback,Repository core;
+    class Speech,LLM,Atlas external;
 ```
+
+### How the AI fits
 
 The model proposes dialogue or a reveal ID in nested JSON. The backend validates prerequisites and uses authored wording for critical revelations. The browser acknowledges actual playback before the engine commits a spoken discovery. A generated reply, or a model's `condition_reached` flag, is never enough to unlock evidence.
 
