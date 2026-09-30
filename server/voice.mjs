@@ -30,7 +30,7 @@ export class VoiceService {
     if (!res.ok)
       throw new HttpError(
         502,
-        `Voice provider request failed (${res.status}). You can continue using text.`,
+        `Voice provider request failed (${res.status}). Please retry the call shortly; the case board remains available.`,
         'voice_provider_error',
       );
     return res.status === 204 ? null : res.json();
@@ -60,7 +60,7 @@ export class VoiceService {
     requireThat(
       origin && /^https:\/\//.test(origin),
       503,
-      'A public HTTPS callback URL is required for live voice. Text interviews remain available.',
+      'A public HTTPS callback URL is required for live voice. The case board remains available.',
     );
     requireThat(
       this.config.LLM_API_KEY,
@@ -80,7 +80,7 @@ export class VoiceService {
     requireThat(
       remaining > 10,
       429,
-      'This case has used its 30-minute voice allowance. Continue using text to finish.',
+      'This case has used its 30-minute voice allowance. You can still inspect the board and submit a reconstruction.',
     );
     const duration = Math.min(600, remaining),
       id = randomUUID(),

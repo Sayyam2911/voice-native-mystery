@@ -67,29 +67,5 @@ export function useGame() {
     [applyGame],
   );
 
-  const ask = useCallback(
-    async (characterId, text) => {
-      if (actionLock.current) return false;
-      actionLock.current = true;
-      setBusy(true);
-      setError('');
-      try {
-        const reply = await api('turn', { characterId, text, requestId: crypto.randomUUID() });
-        // Text delivery is rendered before acknowledgement; voice uses actual playback completion.
-        applyGame(reply.game);
-        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-        applyGame(await api('ack', { turnId: reply.turnId, heardText: reply.text }));
-        return true;
-      } catch (e) {
-        setError(e.message);
-        return false;
-      } finally {
-        actionLock.current = false;
-        setBusy(false);
-      }
-    },
-    [applyGame],
-  );
-
-  return { game, catalog, health, loading, busy, error, action, ask, refresh, applyGame, setError };
+  return { game, catalog, health, loading, busy, error, action, refresh, applyGame, setError };
 }

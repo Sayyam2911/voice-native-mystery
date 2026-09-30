@@ -1,28 +1,21 @@
 import { useEffect, useState } from 'react';
-import {
-  ArrowLeft,
-  ArrowUpRight,
-  CheckCircle2,
-  Fingerprint,
-  MessageSquare,
-  Scale,
-  X,
-} from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, CheckCircle2, Fingerprint, Radio, Scale, X } from 'lucide-react';
 import { CaseCatalog } from './components/CaseCatalog';
 import { InvestigationBoard } from './components/InvestigationBoard';
 import { InterviewPanel } from './components/InterviewPanel';
+import { PartnerContact } from './components/PartnerContact';
 import { AccusationDialog } from './components/AccusationDialog';
 import { useGame } from './hooks/useGame';
 import { useVoice } from './hooks/useVoice';
 
 export default function App() {
-  const { game, catalog, health, loading, busy, error, action, ask, applyGame, setError } =
-    useGame();
+  const { game, catalog, health, loading, busy, error, action, applyGame, setError } = useGame();
   const { voice, start: startVoice, stop: stopVoice } = useVoice({ applyGame, setError });
   const [showLibrary, setShowLibrary] = useState(false);
   const [interviewOpen, setInterviewOpen] = useState(false);
   const [accusation, setAccusation] = useState(false);
   const character = game?.characters.find((person) => person.id === game.state.selectedCharacterId);
+  const partner = game?.characters.find((person) => person.id === game.case.partnerId);
   const playing = game && !showLibrary;
   useEffect(() => {
     if (game?.state.status === 'resolved') void stopVoice();
@@ -45,12 +38,16 @@ export default function App() {
   async function selectCharacter(characterId) {
     if (busy) return;
     await stopVoice();
-    if (characterId !== game.state.selectedCharacterId) await action('select', { characterId });
+    if (
+      characterId !== game.state.selectedCharacterId &&
+      !(await action('select', { characterId }))
+    )
+      return false;
     setInterviewOpen(true);
+    return true;
   }
   async function callPartner() {
-    await selectCharacter(game.case.partnerId);
-    await action('alert-seen', {});
+    if (await selectCharacter(game.case.partnerId)) await action('alert-seen', {});
   }
 
   return (
@@ -124,6 +121,17 @@ export default function App() {
               <p>{game.case.subtitle}</p>
             </div>
             <div className="game-toolbar-actions">
+              <PartnerContact
+                partner={partner}
+                alert={
+                  game.state.partnerAlert &&
+                  !game.state.partnerAlert.acknowledged &&
+                  game.state.status === 'active'
+                }
+                selected={interviewOpen && character?.id === game.case.partnerId}
+                disabled={busy || voice.status === 'connecting'}
+                onOpen={callPartner}
+              />
               <span>
                 {game.clues.length} discoveries · {game.turnCount} questions
               </span>
@@ -152,7 +160,7 @@ export default function App() {
             !game.state.partnerAlert.acknowledged &&
             game.state.status === 'active' && (
               <div className="partner-pager" role="status">
-                <MessageSquare size={17} />
+                <Radio size={17} />
                 <div>
                   <strong>Your partner has a lead</strong>
                   <p>{game.state.partnerAlert.message}</p>
@@ -166,7 +174,9 @@ export default function App() {
             <aside className="interview-drawer">
               <button
                 className="close-interview"
-                aria-label="Close interview"
+                aria-label={
+                  voice.status === 'idle' ? 'Close interview' : 'End call and close interview'
+                }
                 onClick={async () => {
                   await stopVoice();
                   setInterviewOpen(false);
@@ -178,8 +188,8 @@ export default function App() {
                 game={game}
                 character={character}
                 busy={busy}
-                onAsk={ask}
                 voice={voice}
+                voiceAvailable={Boolean(health?.voiceConfigured && health?.dialogueConfigured)}
                 onStartVoice={() => startVoice(character.id)}
                 onStopVoice={stopVoice}
               />

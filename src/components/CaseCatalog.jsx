@@ -81,7 +81,9 @@ export function CaseCatalog({ cases, busy, onStart, onResume, activeCase, health
         <div>
           <span className="step-number">01</span>
           <h3>Listen carefully</h3>
-          <p>Choose a person and speak naturally. You can interrupt or use text at any time.</p>
+          <p>
+            Choose a person and start a voice interview. Speak naturally and interrupt when needed.
+          </p>
         </div>
         <div>
           <span className="step-number">02</span>

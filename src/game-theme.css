@@ -79,6 +79,7 @@ body {
   flex-direction: column;
 }
 .game-workspace {
+  --toolbar-height: 96px;
   flex: 1;
   min-height: 0;
   position: relative;
@@ -87,7 +88,7 @@ body {
 }
 .game-toolbar {
   flex-shrink: 0;
-  height: 82px;
+  height: var(--toolbar-height);
   padding: 15px 28px;
   background: linear-gradient(#242a23, #1a211b);
   border-bottom: 1px solid #655036;
@@ -119,7 +120,62 @@ body {
 .game-toolbar-actions {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
+}
+.partner-contact {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  padding: 7px 11px;
+  border: 1px solid #61563e;
+  border-radius: 4px;
+  background: #171f19;
+  color: #ded0b0;
+  text-align: left;
+}
+.partner-contact:hover:not(:disabled),
+.partner-contact.selected {
+  background: #303629;
+  border-color: #b49760;
+}
+.partner-contact.has-alert {
+  border-color: #d0aa63;
+}
+.partner-contact-portrait {
+  width: 35px;
+  height: 40px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: #414a3b;
+  display: grid;
+  place-items: center;
+}
+.partner-contact-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+}
+.partner-contact-copy small {
+  display: block;
+  font-size: 8px;
+  letter-spacing: 1.2px;
+  color: #b59f77;
+  margin-bottom: 4px;
+}
+.partner-contact-copy strong {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+}
+.partner-contact-action {
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+  margin-left: 5px;
+  color: #c4ac7a;
+  font-size: 9px;
 }
 .game-toolbar-actions > span {
   font-size: 10px;
@@ -260,6 +316,9 @@ body {
 }
 .character-pin {
   width: 180px;
+  /* Keep labels out of rotated/filter-composited layers on the zoomable canvas. */
+  transform: none;
+  filter: none;
 }
 .polaroid {
   padding: 10px 10px 12px;
@@ -269,10 +328,11 @@ body {
   background: linear-gradient(120deg, #efe4ca, #d6cab0);
   border: 1px solid #eadfc3;
   border-radius: 0;
+  box-shadow: 5px 8px 10px #0007;
 }
 .polaroid:hover:not(:disabled) {
-  transform: translateY(-4px);
-  box-shadow: 0 3px 9px #0005;
+  border-color: #a48046;
+  box-shadow: 5px 8px 10px #0007;
 }
 .portrait-frame {
   height: 164px;
@@ -295,8 +355,8 @@ body {
   width: 100%;
   padding: 5px 3px;
   color: #d4c7b4;
-  font-size: 6px;
-  letter-spacing: 1.5px;
+  font-size: 9px;
+  letter-spacing: 1px;
   background: #171b19c9;
 }
 .portrait-placeholder {
@@ -309,14 +369,24 @@ body {
 .polaroid strong {
   display: block;
   margin-top: 10px;
-  font: 21px var(--serif);
-  line-height: 1.2;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.3;
 }
 .polaroid small {
   display: block;
-  font-size: 8px;
+  font-size: 12px;
+  line-height: 1.5;
   margin: 5px 0 8px;
-  color: #82745b;
+  color: #514534;
+}
+.polaroid .photo-action {
+  font-size: 10px;
+  letter-spacing: 0;
+  color: #594321;
+}
+.polaroid:disabled {
+  opacity: 1;
 }
 .photo-action {
   display: flex;
@@ -559,20 +629,20 @@ body {
 .interview-drawer {
   position: absolute;
   right: 18px;
-  top: 100px;
+  top: calc(var(--toolbar-height) + 16px);
   bottom: 20px;
-  width: 355px;
+  width: 390px;
   z-index: 20;
   box-shadow: -12px 12px 35px #000a;
 }
 .close-interview {
   position: absolute;
-  top: 14px;
-  right: 14px;
+  top: 12px;
+  right: 12px;
   z-index: 3;
   background: none;
   border: 0;
-  color: #948c76;
+  color: #d0c8b0;
   display: flex;
   padding: 4px;
 }
@@ -581,100 +651,336 @@ body {
   height: 100%;
   min-height: 0;
   max-height: none;
-  background: #202923f5;
+  background: #1c251f;
   border-color: #777047;
   border-radius: 3px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #667053 #1c251f;
 }
-.interview-heading > .eyebrow {
-  color: #8f906f;
+/* Calls are the primary interaction; references and transcripts are read-only. */
+.call-heading {
+  padding: 20px 42px 14px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-bottom: 1px solid #394637;
+  flex-shrink: 0;
 }
-.interview-person h2 {
-  color: #e0cfaa;
+.call-heading .eyebrow {
+  color: #b5ae86;
+  font-size: 9px;
+  letter-spacing: 1.3px;
 }
-.interview-person p,
-.character-bio {
-  color: #8e9986;
+.call-connection {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font:
+    8px ui-monospace,
+    monospace;
+  letter-spacing: 0.6px;
+  color: #a2aa92;
 }
-.interview-person .avatar {
-  background: #414a3b;
-  border-color: #736c4a;
-  color: #cdb887;
-  overflow: hidden;
+.call-connection > span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #9e9274;
 }
-.interview-avatar {
+.call-connection.connected > span {
+  background: #aed295;
+  box-shadow: 0 0 8px #9bbc7444;
+}
+.call-stage {
+  text-align: center;
+  padding: 23px 24px 19px;
+  flex-shrink: 0;
+  background: radial-gradient(ellipse at 50% 25%, #3a45302e, transparent 70%);
+}
+.call-portrait {
+  width: 112px;
+  height: 112px;
+  margin: 0 auto 17px;
+  position: relative;
+  border-radius: 50%;
+  border: 2px solid #b19764;
+  box-shadow:
+    0 0 0 7px #4d58312c,
+    0 8px 20px #0005;
+  background: #343d2d;
+}
+.call-portrait > img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center 28%;
+  border-radius: inherit;
 }
-.voice-bar {
-  background: #303b2c;
-  border-color: #45533b;
+.call-portrait > span:first-child {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  font: 30px var(--serif);
 }
-.voice-bar > div {
-  color: #a5b190;
+.call-portrait-badge {
+  display: grid;
+  place-items: center;
+  position: absolute;
+  bottom: -2px;
+  right: -3px;
+  width: 32px;
+  height: 32px;
+  background: #344b32;
+  border: 2px solid #1c251f;
+  border-radius: 50%;
+  color: #d7c798;
 }
-.voice-bar.live {
-  background: #374c2f;
+.is-listening .call-portrait,
+.is-speaking .call-portrait,
+.is-thinking .call-portrait {
+  border-color: #aac790;
 }
-.voice-bar button {
-  background: #25331f;
-  border-color: #667951;
-  color: #becbab;
+.call-stage h2 {
+  color: #e2d1ac;
+  font-size: 32px;
+  line-height: 1.15;
 }
-.voice-bar .voice-stop {
-  background: #3b2c20;
-  border-color: #795b3c;
-  color: #c9ab88;
+.call-role {
+  color: #b0b49e;
+  font-size: 12px;
+  margin-top: 6px;
+  line-height: 1.5;
 }
-.transcript-turn span {
-  color: #818f75;
+.call-activity {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  gap: 5px;
+  margin: 12px 0 7px;
 }
-.player-line {
-  color: #a2b090;
-  border-color: #616f4d;
+.call-activity span {
+  width: 3px;
+  height: 4px;
+  border-radius: 3px;
+  background: #68765b;
 }
-.character-line {
-  color: #ccc7ac;
+.call-activity.listening span {
+  height: 8px;
+  background: #a3bb88;
 }
-.live-caption {
-  background: #35452d;
+.call-activity.speaking span {
+  height: 22px;
+  background: #c2ae73;
+  animation: call-wave 0.9s ease-in-out infinite alternate;
 }
-.thinking {
-  color: #99a783;
+.call-activity.thinking span,
+.call-activity.connecting span {
+  height: 6px;
+  animation: pulse 1.4s ease-in-out infinite;
 }
-.interview-empty p {
-  color: #aeb18f;
+.call-activity span:nth-child(3n) {
+  animation-delay: -0.5s;
 }
-.quote-mark {
-  color: #657658;
+.call-activity span:nth-child(3n + 1) {
+  animation-delay: -0.25s;
 }
-.interview-empty small {
-  color: #808d72;
+@keyframes call-wave {
+  from {
+    transform: scaleY(0.25);
+  }
+  to {
+    transform: scaleY(1);
+  }
 }
-.topic-chips button {
-  border-color: #596147;
-  background: #313c2b;
-  color: #a5b38f;
+.call-state strong {
+  font-size: 13px;
+  font-weight: 500;
+  color: #d4d4b4;
 }
-.interview-composer {
-  border-color: #3e4c35;
+.call-state p {
+  font-size: 11px;
+  line-height: 1.6;
+  color: #a5af93;
+  margin-top: 5px;
 }
-.interview-composer form {
-  border-color: #626b4e;
-  background: #18231a;
+.call-timer {
+  display: block;
+  font:
+    12px ui-monospace,
+    monospace;
+  font-variant-numeric: tabular-nums;
+  color: #b8c59f;
+  margin-top: 10px;
 }
-.interview-composer textarea {
-  color: #d6d1ba;
+.call-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 49px;
+  width: 100%;
+  margin-top: 20px;
+  border-radius: 5px;
+  border: 1px solid #b2bc87;
+  background: #aeb77b;
+  color: #1c281e;
+  font-size: 13px;
+  font-weight: 600;
 }
-.interview-composer textarea::placeholder {
-  color: #717f62;
+.call-button:hover:not(:disabled) {
+  background: #c7cb92;
 }
-.composer-note {
-  color: #738364;
+.call-button.end-call {
+  background: #512d25;
+  border-color: #976045;
+  color: #f0c5ac;
 }
-.send-question {
-  background: #8f784c;
-  color: #182319;
+.call-button.end-call:hover:not(:disabled) {
+  background: #69392c;
+}
+.call-spinner {
+  animation: call-spin 1s linear infinite;
+}
+@keyframes call-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.call-privacy {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 13px;
+  font-size: 10px;
+  line-height: 1.5;
+  color: #aab59a;
+}
+.call-audio-note {
+  font-size: 9px;
+  color: #89957e;
+  margin-top: 5px;
+  line-height: 1.5;
+}
+.call-caption {
+  display: flex;
+  gap: 10px;
+  margin: 0 17px 17px;
+  padding: 12px;
+  background: #2b3828;
+  border: 1px solid #44543a;
+  border-radius: 4px;
+  color: #dad8bc;
+  flex-shrink: 0;
+}
+.call-caption svg {
+  flex-shrink: 0;
+  color: #c5ba8c;
+  margin-top: 3px;
+}
+.call-caption p {
+  font-size: 12px;
+  line-height: 1.7;
+}
+.call-reference {
+  border-top: 1px solid #394637;
+  padding: 0 18px;
+  margin-top: auto;
+  flex-shrink: 0;
+}
+.call-reference details + details {
+  border-top: 1px solid #34412f;
+}
+.call-reference summary {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 14px 0;
+  list-style: none;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 500;
+  color: #c7cbb0;
+}
+.call-reference summary::-webkit-details-marker {
+  display: none;
+}
+.call-reference summary > svg {
+  margin-left: auto;
+  transition: transform 0.18s;
+}
+.call-reference details[open] > summary > svg {
+  transform: rotate(180deg);
+}
+.call-reference summary > span {
+  font-size: 9px;
+  color: #9fac8a;
+  font-weight: 400;
+}
+.call-topics > p {
+  font-size: 10px;
+  color: #9fac8a;
+  line-height: 1.7;
+}
+.call-reference ul {
+  margin: 10px 0 16px;
+  padding-left: 17px;
+}
+.call-reference li {
+  font-size: 11px;
+  line-height: 1.8;
+  color: #bdc4a6;
+  margin-bottom: 7px;
+}
+.call-observations li {
+  margin-bottom: 15px;
+}
+.call-observations li strong {
+  font-size: 11px;
+  color: #d6d0ae;
+}
+.call-observations li p {
+  font-size: 11px;
+  line-height: 1.8;
+  margin-top: 4px;
+}
+.call-observations li small {
+  font-size: 9px;
+  color: #99a485;
+}
+.call-transcript .transcript {
+  padding: 3px 0 16px;
+  min-height: 0;
+  max-height: 260px;
+  scrollbar-color: #617051 transparent;
+}
+.transcript-empty {
+  font-size: 11px;
+  line-height: 1.8;
+  color: #a8b295;
+}
+.voice-interview .transcript-turn span {
+  color: #a2b18d;
+  font-size: 9px;
+}
+.voice-interview .player-line {
+  color: #b7c5a1;
+  border-color: #677b51;
+}
+.voice-interview .character-line {
+  color: #ddd5b8;
+}
+.voice-interview .transcript-turn p {
+  font-size: 12px;
+  line-height: 1.8;
+}
+.voice-interview .reply-warning {
+  color: #dab792;
 }
 .board-detail {
   width: min(520px, calc(100vw - 30px));
@@ -823,6 +1129,18 @@ body {
   color: #ad9c76;
 }
 @media (max-width: 850px) {
+  .game-workspace {
+    --toolbar-height: 124px;
+  }
+  .game-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    gap: 12px;
+  }
+  .game-toolbar-actions {
+    justify-content: space-between;
+  }
   .game-toolbar p {
     display: none;
   }
@@ -837,7 +1155,7 @@ body {
     font-size: 29px;
   }
   .interview-drawer {
-    width: 330px;
+    width: 370px;
   }
 }
 @media (max-width: 550px) {
@@ -846,8 +1164,7 @@ body {
     padding: 0 17px;
   }
   .game-toolbar {
-    height: 75px;
-    padding: 15px;
+    padding: 12px 15px;
     gap: 10px;
   }
   .case-tag {
@@ -876,11 +1193,32 @@ body {
     bottom: 15px;
   }
   .interview-drawer {
-    top: 85px;
+    top: calc(var(--toolbar-height) + 10px);
     right: 10px;
     bottom: 12px;
     width: calc(100% - 20px);
-    max-width: 365px;
+    max-width: 390px;
+  }
+  .partner-contact {
+    gap: 7px;
+    padding: 5px 7px;
+  }
+  .partner-contact-action > span {
+    display: none;
+  }
+  .call-heading {
+    padding: 17px 40px 12px 16px;
+  }
+  .call-stage {
+    padding: 18px 20px;
+  }
+  .call-portrait {
+    width: 90px;
+    height: 90px;
+    margin-bottom: 13px;
+  }
+  .call-stage h2 {
+    font-size: 29px;
   }
   .partner-pager {
     right: 12px;

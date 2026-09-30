@@ -16,7 +16,9 @@ export class VoiceClient {
     this.onState({ status: 'connecting', caption: '' });
     this.context = new AudioContext({ sampleRate: 24000 });
     if (this.context.sampleRate !== 24000)
-      throw new Error('Use Chrome or Edge for 24 kHz voice. Text works in other browsers.');
+      throw new Error(
+        'This browser cannot provide 24 kHz voice audio. Please use Chrome or Edge for calls.',
+      );
     await this.context.audioWorklet.addModule('/pcm-processor.js');
     this.stream = await navigator.mediaDevices.getUserMedia({
       audio: { echoCancellation: true, noiseSuppression: false },
@@ -53,7 +55,7 @@ export class VoiceClient {
       }
     });
     this.socket.addEventListener('error', () =>
-      this.onError('The voice connection failed. Please reconnect or use text.'),
+      this.onError('The voice connection failed. Please start the call again.'),
     );
     this.socket.addEventListener('close', () => {
       if (!this.stopped) this.onClose();
@@ -78,6 +80,7 @@ export class VoiceClient {
         this.onState({ status: 'listening', caption: `You: ${message.text}` });
         break;
       case 'reply.started':
+        this.onState({ status: 'thinking', caption: '' });
         this.current = {
           id: message.reply_id,
           words: [],

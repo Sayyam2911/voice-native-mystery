@@ -1,5 +1,5 @@
 import { Handle, Position } from '@xyflow/react';
-import { ArrowUpRight, Check, FileSearch, MessageCircle } from 'lucide-react';
+import { ArrowUpRight, Check, FileSearch, Phone } from 'lucide-react';
 
 function Anchors() {
   return (
@@ -23,7 +23,7 @@ export function CharacterPin({ data }) {
         className="polaroid nodrag"
         disabled={data.disabled}
         onClick={() => data.onSelect(character.id)}
-        aria-label={`Interview ${character.name}`}
+        aria-label={`Open voice interview with ${character.name}`}
       >
         <div className="portrait-frame">
           {character.avatar ? (
@@ -35,12 +35,12 @@ export function CharacterPin({ data }) {
           ) : (
             <span className="portrait-placeholder">{character.initials || '?'}</span>
           )}
-          <span className="portrait-code">{data.partner ? 'PARTNER' : 'PERSON OF INTEREST'}</span>
+          <span className="portrait-code">CASE CONTACT</span>
         </div>
         <strong>{character.name}</strong>
         <small>{character.role}</small>
         <span className="photo-action">
-          <MessageCircle size={11} /> Click to interview
+          <Phone size={13} /> Open voice interview
         </span>
       </button>
     </div>

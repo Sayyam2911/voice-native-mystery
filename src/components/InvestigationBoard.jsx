@@ -3,6 +3,7 @@ import { ReactFlow, Controls, useNodesState } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { X, Pin, Move, Fingerprint } from 'lucide-react';
 import { CharacterPin, EvidencePin, DossierPin, ExhibitPin, LeadPin } from './board/PinNodes';
+import { casePeople, caseConnections } from '../lib/board';
 
 const nodeTypes = {
   character: CharacterPin,
@@ -19,23 +20,7 @@ export function InvestigationBoard({ game, busy, onSelect, onInspect, onInvestig
   const dialogRef = useRef(null);
   const positions = useRef({});
   const storageKey = `casework-board:${game.sessionId}`;
-  const availableCharacters = new Set(game.characters.map((person) => person.id));
-  const edges = game.clues.flatMap((clue) =>
-    (clue.characters || [])
-      .filter((id) => availableCharacters.has(id))
-      .map((id) => ({
-        id: `${clue.id}:${id}`,
-        source: `person:${id}`,
-        target: `clue:${clue.id}`,
-        type: 'straight',
-        selectable: false,
-        style: {
-          stroke: '#9c302b',
-          strokeWidth: 2.3,
-          opacity: id === game.state.selectedCharacterId ? 0.9 : 0.48,
-        },
-      })),
-  );
+  const edges = caseConnections(game);
 
   useEffect(() => {
     try {
@@ -55,7 +40,7 @@ export function InvestigationBoard({ game, busy, onSelect, onInspect, onInvestig
         data: { case: game.case, onOpen: () => setDetail({ kind: 'briefing' }) },
       },
     ];
-    game.characters.forEach((character, index) => {
+    casePeople(game).forEach((character, index) => {
       const id = `person:${character.id}`;
       next.push({
         id,
@@ -66,7 +51,6 @@ export function InvestigationBoard({ game, busy, onSelect, onInspect, onInvestig
         }),
         data: {
           character,
-          partner: character.id === game.case.partnerId,
           selected: character.id === game.state.selectedCharacterId,
           disabled: busy,
           tilt: tilts[index % tilts.length],
@@ -145,7 +129,7 @@ export function InvestigationBoard({ game, busy, onSelect, onInspect, onInvestig
         onNodesChange={onNodesChange}
         onNodeDragStop={rememberPosition}
         fitView
-        fitViewOptions={{ padding: 0.14, maxZoom: 0.92 }}
+        fitViewOptions={{ padding: 0.14, minZoom: 0.7, maxZoom: 1 }}
         minZoom={0.25}
         maxZoom={1.6}
         nodesConnectable={false}
