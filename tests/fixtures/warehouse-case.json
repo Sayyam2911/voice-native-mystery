@@ -1,0 +1,78 @@
+{
+  "id": "warehouse-test",
+  "version": 1,
+  "schemaVersion": 1,
+  "partnerId": "liaison",
+  "title": "Warehouse test fixture",
+  "briefing": "Determine who caused a warehouse death and support the finding with independent evidence.",
+  "openingFacts": ["A worker was found beside a damaged loading platform."],
+  "characters": [
+    {
+      "id": "liaison",
+      "name": "Inspector Kim",
+      "role": "Partner",
+      "initial": true,
+      "facts": ["I can check access records."],
+      "fallbackReply": "Ask me to check the access record."
+    },
+    {
+      "id": "supervisor",
+      "name": "Alex Morgan",
+      "role": "Supervisor",
+      "initial": true,
+      "facts": ["I stayed in the office."],
+      "fallbackReply": "I stayed in the office."
+    }
+  ],
+  "clues": [
+    {
+      "id": "scene-trace",
+      "title": "Platform trace",
+      "body": "The platform had been moved after the incident.",
+      "source": "Scene report",
+      "characters": ["supervisor"],
+      "inspectable": true
+    },
+    {
+      "id": "access-record",
+      "title": "Access record",
+      "body": "Alex entered the loading area.",
+      "source": "Access log",
+      "characters": ["supervisor"]
+    },
+    {
+      "id": "corrected-account",
+      "title": "Corrected account",
+      "body": "Alex admits moving the platform after the fatal incident.",
+      "source": "Interview",
+      "characters": ["supervisor"]
+    }
+  ],
+  "leads": [
+    {
+      "id": "check-access",
+      "title": "Check access records",
+      "description": "Check who entered the loading area.",
+      "keywords": ["access", "record"],
+      "speech": "The access record places Alex at the loading area.",
+      "clueIds": ["access-record"]
+    }
+  ],
+  "reveals": [
+    {
+      "id": "correct-account",
+      "characterId": "supervisor",
+      "level": "full",
+      "topic": "Confront the platform and access record.",
+      "keywords": ["platform", "truth"],
+      "requires": { "all": ["scene-trace", "access-record"] },
+      "speech": "I caused the fatal incident. I moved the platform afterward to disguise what happened.",
+      "clueIds": ["corrected-account"]
+    }
+  ],
+  "resolution": {
+    "culpritId": "supervisor",
+    "proofGroups": [["scene-trace"], ["access-record"], ["corrected-account"]],
+    "reconstruction": "Alex caused the incident and moved the platform to mislead the investigation."
+  }
+}
