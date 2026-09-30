@@ -21,3 +21,5 @@ The owner has approximately seven hours available and authorized implementation 
 6. Document submission setup, limitations, and the architecture actually built.
 
 The first case is an implementation priority, not a decision to make the application single-story. Additional content follows the working reusable engine. Deployment, real-model behavior, and playback alignment remain gates until tested.
+
+September 30 content milestone: step 5's authoring portion is complete with Blackwater Cabin and The Willowmere Affair. Both proof routes, disclosure gates, interruption, and session isolation pass deterministic tests; paraphrased partial/full admissions pass live-model checks. Remaining step 5 work is human voice pacing and public-deployment playtesting, not building another case-specific code path.

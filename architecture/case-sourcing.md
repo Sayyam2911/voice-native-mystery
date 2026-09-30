@@ -1,6 +1,6 @@
 # Case source research
 
-Status: the source approach and standalone present-day presentation are accepted. “The Adventure of the Abbey Grange” is selected as the first source. Its [present-day case bible](cases/grange-house.md) is a review draft, not yet an approved playable case. Other stories remain candidates. Adapted cases will credit their literary sources.
+Status: three standalone contemporary packs are implemented: [Grange House](cases/grange-house.md), [Blackwater Cabin](cases/blackwater-cabin.md), and [The Willowmere Affair](cases/willowmere.md). The owner delegated adding the latter two on September 30 using the earlier shortlist and existing rules. Each credits its literary source; each has fixed case-specific gates and independently tested proof/confession paths.
 
 ## Selection criteria
 
@@ -28,6 +28,6 @@ Status: the source approach and standalone present-day presentation are accepted
 
 Project Gutenberg identifies this Doyle collection as [public domain in the USA](https://www.gutenberg.org/ebooks/108). Its notice asks users outside the USA to check local law. [India's Copyright Act, section 22](https://copyright.gov.in/Copyright_Act_1957/chapter_v.html), gives the general term for literary works published during an author's life as 60 years starting in the year after death; Gutenberg lists Doyle's death in 1930. Distribution locations and any borrowed modern adaptations still need checking before publication.
 
-## Proposed initial catalog
+## Implemented initial catalog
 
-“The Adventure of the Abbey Grange” is the first selected source and is being adapted to prove the voice interrogation format. “The Boscombe Valley Mystery” and “Black Peter” are candidates for cases two and three. “The Golden Pince-Nez” is a reserve fourth option, with higher adaptation effort. The rest of the lineup remains open for discussion.
+“The Adventure of the Abbey Grange” became Grange House; “Black Peter” became Blackwater Cabin; “The Boscombe Valley Mystery” became The Willowmere Affair. The original texts were inspected before the new adaptations were authored. The new case bibles distinguish preserved mystery structure from original contemporary additions. “The Golden Pince-Nez” remains an optional fourth, not a submission requirement. Actual 15–30-minute pacing still needs human playtesting.

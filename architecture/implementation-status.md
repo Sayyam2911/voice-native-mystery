@@ -7,9 +7,10 @@
 - Nested JSON model proposals; backend prerequisite gates, authored critical speech, delivered-text acknowledgements, accusation proof groups, and verified-confession route. No blanket second-model review.
 - Real Groq authentication and structured dialogue tested. A paraphrased eligible confrontation returns the correct reveal proposal. Free-form consistency and case difficulty still need broader playtests.
 - Game-first, dark React Flow pinboard: fictional portrait photos, pinned paper notes and exhibits, sourced red-thread relationships, dragging/pan/zoom, a character interview drawer, partner leads, and reconstruction dialog.
-- Five portrait assets generated with the built-in image tool and bundled in `public/assets/avatars/`; full prompts are in `public/assets/portrait-manifest.json`. No runtime external avatar requests.
+- Thirteen fictional portrait assets generated with the built-in image tool and bundled in `public/assets/avatars/`; full prompts are in `public/assets/portrait-manifest.json` and `additional-portrait-manifest.json`. Rowan's portrait is reused across cases. No runtime external avatar requests.
 - Browser voice client with microphone worklet, PCM playback, interruption flushing, and conservative delivery acknowledgement. Server authenticates and signs visitor/character/lease-specific callbacks. Agent/token failure cleanup tested.
-- 16 regular backend tests and one live Atlas integration test passing; production frontend build passing. Earlier browser checks show the pinboard, case catalog, discovered notes, and character images. The earlier typed interview completed against the live model. The Atlas-backed preview's API is verified, but its latest visual reload was blocked by browser policy.
+- 28 regular backend tests passing, including reachability audits and both resolution routes for the new cases. Four real Groq requests pass the opt-in `test:dialogue` checks for paraphrased partial/full disclosures; initial-state backend gates reject those proposals. The earlier live Atlas integration test and production build passed. Earlier browser checks show the pinboard, discovered notes, and character images, but the latest visual reload was blocked by browser policy.
+- Three attributed, contemporary case packs: Grange House, Blackwater Cabin, and The Willowmere Affair. Content, portraits, gates, and proof paths were added without modifying the engine, UI, or published Grange House v1. See [catalog validation](cases/catalog-validation.md) and the spoiler-marked case bibles.
 
 ## Agreed UI/gameplay refinement
 
@@ -20,9 +21,9 @@ The owner rejected the initial dashboard-style UI in favor of a large, darker in
 1. Configure Vercel's network access and server-side environment, and verify real browser refresh/concurrent visitors on the public deployment. The existing `casework_app` user is cluster-restricted but currently has `readWriteAnyDatabase`; tighten it to `readWrite` on `voice_native_mystery` before public release. Local persistence and fresh-client/API recovery are verified.
 2. Copy the stable locally generated `APP_SECRET` securely to Vercel and set the final public HTTPS origin. Revalidate AssemblyAI agent creation, custom callbacks, real audio, barge-in, character switching, delivery alignment, and usage caps end-to-end. Do not call live voice verified yet.
 3. Implement the accepted short **spoken** partner alert at a quiet moment. Currently the alert is visual and opens the partner interview.
-4. Prepare and playtest additional distinct case packs. Only Grange House is currently published in the catalog; the warehouse fixture is test-only. The 15–30-minute duration is a target, not a measured playtest result.
+4. Human-playtest the three-case catalog for clarity, free-form consistency, and real voice pacing. The warehouse fixture remains test-only. The 15–30-minute duration is a target, not a measured result.
 5. Deploy the published GitHub `main` branch to Vercel and verify public concurrent visitor isolation. GitHub sign-in and the source push succeeded; the owner's existing MIT license/history is preserved by a merge.
-6. Optimize portrait delivery before public release (current source PNGs total approximately 10 MB), perform prompt-injection/consistency playtests, and check provider/free-tier capacity.
+6. Optimize portrait delivery before public release (thirteen high-resolution source PNGs are now bundled), perform prompt-injection/consistency playtests, and check provider/free-tier capacity.
 
 ## Local preview
 
