@@ -151,16 +151,14 @@ export class MongoStore {
             429,
             'The daily demo capacity is reached. Please try again tomorrow.',
           );
-        await this.db
-          .collection('limits')
-          .updateOne(
-            { _id: day },
-            {
-              $inc: { count: 1 },
-              $setOnInsert: { expiresAt: new Date(Date.now() + 2 * 86400000) },
-            },
-            { upsert: true, session: tx },
-          );
+        await this.db.collection('limits').updateOne(
+          { _id: day },
+          {
+            $inc: { count: 1 },
+            $setOnInsert: { expiresAt: new Date(Date.now() + 2 * 86400000) },
+          },
+          { upsert: true, session: tx },
+        );
         await this.db.collection('sessions').insertOne(session, { session: tx });
       });
     } finally {

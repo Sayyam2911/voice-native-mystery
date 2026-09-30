@@ -200,6 +200,7 @@ export class GameService {
         characterId: cid,
         playerTranscript: text.trim(),
         channel,
+        voiceLeaseId: leaseId,
         status: 'pending',
         createdAt: new Date(),
         expiresAt: s.expiresAt,
@@ -282,7 +283,10 @@ export class GameService {
           );
           requireThat(r && ruleSatisfied(r.requires, s.state), 403, 'Reveal is not authorized.');
           if (!s.state.revealedIds.includes(r.id)) s.state.revealedIds.push(r.id);
-          s.state.characterLevels[t.characterId] = r.level;
+          const levelRank = { denial: 0, partial: 1, full: 2 };
+          const previousLevel = s.state.characterLevels[t.characterId] || 'denial';
+          if ((levelRank[r.level] ?? 0) >= (levelRank[previousLevel] ?? 0))
+            s.state.characterLevels[t.characterId] = r.level;
         }
         if (a.leadId && !s.state.completedLeadIds.includes(a.leadId))
           s.state.completedLeadIds.push(a.leadId);

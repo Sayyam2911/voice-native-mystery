@@ -143,6 +143,7 @@ export function projectGame(pack, session, turns = [], events = []) {
   const state = session.state;
   const known = new Set(state.knownClueIds);
   return {
+    sessionId: session._id,
     case: {
       ...catalogProjection(pack),
       partnerId: pack.partnerId,
@@ -154,11 +155,12 @@ export function projectGame(pack, session, turns = [], events = []) {
     expiresAt: session.expiresAt,
     characters: pack.characters
       .filter((x) => state.unlockedCharacterIds.includes(x.id))
-      .map(({ id, name, role, initials, bio, topics }) => ({
+      .map(({ id, name, role, initials, avatar, bio, topics }) => ({
         id,
         name,
         role,
         initials,
+        avatar,
         bio,
         topics,
         level: state.characterLevels[id] || 'denial',
@@ -176,7 +178,7 @@ export function projectGame(pack, session, turns = [], events = []) {
       })),
     exhibits: pack.clues
       .filter((x) => x.inspectable && !known.has(x.id) && ruleSatisfied(x.requires, state))
-      .map(({ id, title, source, kind }) => ({ id, title, source, kind })),
+      .map(({ id, title, exhibitLabel, source, kind }) => ({ id, title: exhibitLabel || title, source, kind })),
     leads: pack.leads.map(({ id, title, description, requires }) => ({
       id,
       title,
@@ -191,6 +193,7 @@ export function projectGame(pack, session, turns = [], events = []) {
       reply: x.approvedReply || null,
       status: x.status,
       channel: x.channel,
+      voiceLeaseId: x.voiceLeaseId || null,
       heardText: x.heardText || '',
       modelMode: x.modelMode,
       warning: x.warning || null,
