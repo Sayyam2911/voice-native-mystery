@@ -1,0 +1,13 @@
+# Dialogue response contract (draft)
+
+**Agreed boundary:** The LLM returns structured JSON to the game backend. This JSON is never forwarded directly to AssemblyAI. The backend turns an approved result into plain speech text for AssemblyAI's streaming chat-completions protocol. The LLM proposes; the case engine authorizes.
+
+## Shape under discussion
+
+The owner wants a richer nested response with fields such as `type`, `condition`, `id`, `level`, and a Boolean `condition_reached`. The earlier two-field `reveal_request` example was too simple and is not the selected schema. `level` should represent disclosure progression: some facts can emerge early, others later, and a character may move through denial, partial admission, and full account. The exact level scale and JSON nesting are deferred until a real case and model can be tested. We still need to distinguish a model's condition assessment from the backend's authoritative result.
+
+One possible separation is a model proposal containing a nested reveal candidate, followed by an internal backend decision after evaluating the fixed case rule. If the model emits `condition_reached`, it is **not** permission to disclose. The backend must compute its own condition result from session facts and the case pack before selecting speech text.
+
+The model receives the selected character's currently permitted disclosure facts and the IDs/descriptions of possible reveal triggers, **not** the locked reveal text. On a `reveal_request`, the backend checks the active character, case prerequisites, and any required player challenge. Only then does it select the authored, case-approved spoken line. A model-supplied flag or ID never unlocks a clue on its own.
+
+The exact nesting, level scale, schema strictness, per-turn limits, and treatment of invalid JSON or a rejected reveal are still open. A safe fallback must never speak raw JSON, an unapproved clue, or the canonical solution. One structured model response plus deterministic case rules is the intent; a second model-review call is not the baseline. Do not freeze this schema before exercising it against a playable case.
