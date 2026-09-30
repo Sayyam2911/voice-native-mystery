@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ArrowLeft, ArrowUpRight, CheckCircle2, Fingerprint, Radio, Scale, X } from 'lucide-react';
 import { CaseCatalog } from './components/CaseCatalog';
 import { InvestigationBoard } from './components/InvestigationBoard';
@@ -17,6 +17,7 @@ export default function App() {
   const character = game?.characters.find((person) => person.id === game.state.selectedCharacterId);
   const partner = game?.characters.find((person) => person.id === game.case.partnerId);
   const playing = game && !showLibrary;
+  const selectedCharacterId = game?.state.selectedCharacterId;
   useEffect(() => {
     if (game?.state.status === 'resolved') void stopVoice();
   }, [game?.state.status, stopVoice]);
@@ -35,17 +36,19 @@ export default function App() {
       setInterviewOpen(false);
     }
   }
-  async function selectCharacter(characterId) {
-    if (busy) return;
-    await stopVoice();
-    if (
-      characterId !== game.state.selectedCharacterId &&
-      !(await action('select', { characterId }))
-    )
-      return false;
-    setInterviewOpen(true);
-    return true;
-  }
+  const selectCharacter = useCallback(
+    async (characterId) => {
+      if (busy) return false;
+      await stopVoice();
+      if (characterId !== selectedCharacterId && !(await action('select', { characterId })))
+        return false;
+      setInterviewOpen(true);
+      return true;
+    },
+    [busy, stopVoice, selectedCharacterId, action],
+  );
+  const inspectClue = useCallback((clueId) => action('inspect', { clueId }), [action]);
+  const investigateLead = useCallback((leadId) => action('investigate', { leadId }), [action]);
   async function callPartner() {
     if (await selectCharacter(game.case.partnerId)) await action('alert-seen', {});
   }
@@ -153,8 +156,8 @@ export default function App() {
             game={game}
             busy={busy || voice.status === 'connecting'}
             onSelect={selectCharacter}
-            onInspect={(clueId) => action('inspect', { clueId })}
-            onInvestigate={(leadId) => action('investigate', { leadId })}
+            onInspect={inspectClue}
+            onInvestigate={investigateLead}
           />
           {game.state.partnerAlert &&
             !game.state.partnerAlert.acknowledged &&

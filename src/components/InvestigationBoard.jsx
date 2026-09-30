@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { ReactFlow, Controls, useNodesState } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { X, Pin, Move, Fingerprint } from 'lucide-react';
@@ -14,13 +14,20 @@ const nodeTypes = {
 };
 const tilts = [-4, 3, -2, 5, 2, -3];
 
-export function InvestigationBoard({ game, busy, onSelect, onInspect, onInvestigate }) {
+// Audio/caption events must not recreate the graph or its photo/text layers.
+export const InvestigationBoard = memo(function InvestigationBoard({
+  game,
+  busy,
+  onSelect,
+  onInspect,
+  onInvestigate,
+}) {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [detail, setDetail] = useState(null);
   const dialogRef = useRef(null);
   const positions = useRef({});
   const storageKey = `casework-board:${game.sessionId}`;
-  const edges = caseConnections(game);
+  const edges = useMemo(() => caseConnections(game), [game]);
 
   useEffect(() => {
     try {
@@ -129,7 +136,7 @@ export function InvestigationBoard({ game, busy, onSelect, onInspect, onInvestig
         onNodesChange={onNodesChange}
         onNodeDragStop={rememberPosition}
         fitView
-        fitViewOptions={{ padding: 0.14, minZoom: 0.7, maxZoom: 1 }}
+        fitViewOptions={{ padding: 0.14, minZoom: 0.85, maxZoom: 1 }}
         minZoom={0.25}
         maxZoom={1.6}
         nodesConnectable={false}
@@ -178,4 +185,4 @@ export function InvestigationBoard({ game, busy, onSelect, onInspect, onInvestig
       )}
     </section>
   );
-}
+});

@@ -11,7 +11,7 @@ export function useGame() {
   const actionLock = useRef(false);
   const applyGame = useCallback((next) => {
     setGame((current) =>
-      current && current.sessionId === next.sessionId && current.revision > next.revision
+      current && current.sessionId === next.sessionId && current.revision >= next.revision
         ? current
         : next,
     );
