@@ -90,7 +90,7 @@ export class MemoryStore {
     }
     throw new HttpError(
       429,
-      'All voice seats are occupied. You can continue using text or try voice shortly.',
+      'All voice seats are occupied. Please retry the call shortly; the case board remains available.',
     );
   }
   async releaseVoiceSlot(owner) {
@@ -232,7 +232,7 @@ export class MongoStore {
     }
     throw new HttpError(
       429,
-      'All voice seats are occupied. You can continue using text or try voice shortly.',
+      'All voice seats are occupied. Please retry the call shortly; the case board remains available.',
     );
   }
   async releaseVoiceSlot(owner) {

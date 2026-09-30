@@ -79,7 +79,7 @@ export class VoiceClient {
       case 'transcript.user':
         this.onState({ status: 'listening', caption: `You: ${message.text}` });
         break;
-      case 'reply.started':
+      case 'reply.started': {
         this.onState({ status: 'thinking', caption: '' });
         this.current = {
           id: message.reply_id,
@@ -93,13 +93,22 @@ export class VoiceClient {
           startTime: null,
         };
         this.replies.set(message.reply_id, this.current);
+        const reply = this.current;
+        reply.waitTimer = setTimeout(() => {
+          if (!this.stopped && !reply.interrupted && !reply.acknowledged)
+            this.onError(
+              'No spoken reply arrived within 30 seconds. End the call and retry; the server callback or voice provider may be unavailable.',
+            );
+        }, 30000);
+        reply.waitTimer.unref?.();
         break;
+      }
       case 'reply.audio':
         if (this.current && !this.current.interrupted) this.play(message.data, this.current);
         break;
       case 'transcript.agent.delta': {
         const reply = this.replies.get(message.reply_id);
-        if (!reply) break;
+        if (!reply || reply.interrupted) break;
         reply.words.push({ text: message.delta, end: message.end_ms });
         reply.caption += message.delta;
         this.onState({ status: 'speaking', caption: reply.caption });
@@ -115,8 +124,14 @@ export class VoiceClient {
         break;
       }
       case 'reply.done': {
-        const reply = this.replies.get(message.reply_id);
+        // AssemblyAI's normal reply.done event has no reply_id. The active reply owns it.
+        const reply = message.reply_id ? this.replies.get(message.reply_id) : this.current;
         if (!reply) break;
+        if (message.status === 'failed') {
+          clearTimeout(reply.waitTimer);
+          this.onError('The voice provider could not complete the reply. Please retry the call.');
+          break;
+        }
         reply.done = true;
         if (message.status === 'interrupted') this.interrupt(reply);
         this.finish(reply);
@@ -153,12 +168,14 @@ export class VoiceClient {
       this.finish(reply);
     };
     source.start(this.nextPlayback);
+    clearTimeout(reply.waitTimer);
     this.nextPlayback += buffer.duration;
     this.onState({ status: 'speaking', caption: reply.caption });
   }
 
   interrupt(reply = this.current) {
     if (!reply || reply.acknowledged) return;
+    clearTimeout(reply.waitTimer);
     if (!reply.interrupted) {
       const elapsedMs =
         reply.startTime === null
@@ -184,6 +201,11 @@ export class VoiceClient {
 
   finish(reply) {
     if (reply.acknowledged || !reply.done || !reply.final || reply.sources.size) return;
+    clearTimeout(reply.waitTimer);
+    if (!reply.interrupted && reply.startTime === null) {
+      this.onError('The reply contained no playable audio. Please retry the call.');
+      return;
+    }
     reply.acknowledged = true;
     const text = reply.interrupted ? reply.audiblePrefix || '' : reply.text;
     // Receiving reply.done is not sufficient: all locally queued audio must end first.
@@ -199,6 +221,7 @@ export class VoiceClient {
     if (this.stopped) return;
     this.stopped = true;
     this.ready = false;
+    for (const reply of this.replies.values()) clearTimeout(reply.waitTimer);
     this.send({ type: 'session.end' });
     const socket = this.socket;
     if (socket?.readyState === WebSocket.CONNECTING) socket.close();

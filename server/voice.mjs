@@ -1,6 +1,7 @@
 import { randomUUID, createHmac, createHash } from 'node:crypto';
 import { sign, verify } from './security.mjs';
 import { HttpError, requireThat } from './errors.mjs';
+import { validateVoiceOrigin } from './voice-origin.mjs';
 
 export class VoiceService {
   constructor(store, game, config, secret) {
@@ -11,6 +12,9 @@ export class VoiceService {
   }
   get callbackKey() {
     return createHmac('sha256', this.secret).update('assemblyai-callback').digest('hex');
+  }
+  async checkCallback() {
+    return validateVoiceOrigin(this.config.PUBLIC_BASE_URL);
   }
   async request(path, options = {}) {
     requireThat(
@@ -56,12 +60,7 @@ export class VoiceService {
       }
   }
   async start(sid, cid) {
-    const origin = this.config.PUBLIC_BASE_URL?.replace(/\/$/, '');
-    requireThat(
-      origin && /^https:\/\//.test(origin),
-      503,
-      'A public HTTPS callback URL is required for live voice. The case board remains available.',
-    );
+    const origin = await this.checkCallback();
     requireThat(
       this.config.LLM_API_KEY,
       503,

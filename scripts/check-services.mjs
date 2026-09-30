@@ -1,4 +1,5 @@
 import { getStore } from '../server/store.mjs';
+import { validateVoiceOrigin } from '../server/voice-origin.mjs';
 let failed = false;
 try {
   const store = await getStore();
@@ -38,4 +39,13 @@ for (const [label, url, key] of [
 console.log(
   `Signing secret: ${process.env.APP_SECRET?.length >= 32 ? 'configured' : 'needs 32+ characters for deployment'}.`,
 );
+try {
+  await validateVoiceOrigin(process.env.PUBLIC_BASE_URL);
+  console.log('Voice callback: reachable Casework HTTPS health endpoint.');
+} catch {
+  failed = true;
+  console.log(
+    'Voice callback: unreachable or invalid. Use the running app/tunnel origin, not GitHub.',
+  );
+}
 process.exitCode = failed ? 1 : 0;
