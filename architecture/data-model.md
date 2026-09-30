@@ -1,6 +1,6 @@
 # Data architecture — implemented baseline
 
-MongoDB Atlas is the selected production store. The following repository implementation exists, but real Atlas connectivity and transactions have not been exercised yet. The owner paused setup pending a Codex restart.
+MongoDB Atlas is the selected production store. The following repository implementation exists, but the application's Atlas connection and transactions have not been exercised yet. After the Codex restart and owner-enabled AI client access, the plugin created the isolated `Casework` project and free `casework-demo` cluster; cluster readiness is verified. Database credentials, network access, and the application URI remain pending.
 
 ## Collections
 
