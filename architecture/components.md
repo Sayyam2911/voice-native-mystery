@@ -1,6 +1,6 @@
 # Components and responsibilities (working draft)
 
-These logical components are implemented as modules within a single browser app and one Node/Express API deployment, not separate microservices. React/Vite, Groq, AssemblyAI, and the MongoDB repository are the current implementation baseline; live Atlas and public deployment are pending.
+These logical components are implemented as modules within a single browser app and one Node/Express API deployment, not separate microservices. React/Vite, Groq, AssemblyAI, and the MongoDB repository are the current implementation baseline. Local Atlas persistence is verified; integrated voice and public deployment are pending.
 
 | Component | Responsibility |
 | --- | --- |

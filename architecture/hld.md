@@ -1,6 +1,6 @@
 # High-level design (working draft)
 
-This is the working first-release design. September 30 implementation uses React/Vite, a modular Node/Express API targeting Vercel, MongoDB Atlas persistence, Groq structured dialogue, and AssemblyAI named-voice sessions. The backend owns canonical case facts, evidence unlocks, and resolution checks. The browser presents a dark, draggable investigation pinboard with fictional portrait photos and an interview drawer. One visitor's progress never controls another's. Deployment, real Atlas transactions, and integrated voice delivery remain verification gates; see [implementation-status.md](implementation-status.md) for the authoritative checkpoint. Older prototype descriptions below are design history, not claims of completed integration.
+This is the working first-release design. September 30 implementation uses React/Vite, a modular Node/Express API targeting Vercel, MongoDB Atlas persistence, Groq structured dialogue, and AssemblyAI named-voice sessions. The backend owns canonical case facts, evidence unlocks, and resolution checks. The browser presents a dark, draggable investigation pinboard with fictional portrait photos and an interview drawer. One visitor's progress never controls another's. Atlas persistence/transactions have passed a live integration test; deployment and integrated voice delivery remain verification gates. See [implementation-status.md](implementation-status.md) for the authoritative checkpoint. Older prototype descriptions below are design history, not claims of completed integration.
 
 All selected services must operate within free tiers or already-granted credits for the first release; public-link usage needs explicit caps or graceful capacity handling.
 
@@ -24,12 +24,12 @@ flowchart LR
     Dialog -- approved spoken text --> Voice
     Dialog -- bounded context --> LLM[Groq structured dialogue adapter]
     LLM -- structured JSON proposal --> Dialog
-    Sessions <--> DB[(MongoDB Atlas<br/>live verification pending)]
+    Sessions <--> DB[(MongoDB Atlas<br/>local persistence verified)]
 ```
 
 The browser receives only player-visible information and a projection of progress. The backend checks evidence unlocks and resolution against private case facts. Ordinary dialogue uses a self-checking prompt and only the character's currently permitted disclosure context, without a second LLM review call on every turn. Critical evidence, culprit, confession, and solution revelations require backend gates and authored wording. Prompts cannot guarantee the truth of every free-form sentence; broader adversarial and consistency playtests remain necessary.
 
-An active session is recoverable after refresh through a signed HttpOnly cookie and a MongoDB projection, with a fixed 24-hour expiry. The repository implementation is tested against an injected memory store; real Atlas verification is pending. A shared global game object is not acceptable in production. Long-term saved games remain out of scope.
+An active session is recoverable after refresh through a signed HttpOnly cookie and a MongoDB projection, with a fixed 24-hour expiry. Regular tests use an injected memory store; a separate live Atlas test verifies persistence and recovery through a fresh client/API instance. A stable locally generated signing secret is stored in ignored `.env` and must also be supplied securely to Vercel. A shared global game object is not acceptable in production. Long-term saved games remain out of scope.
 
 ## Agreed player interaction
 

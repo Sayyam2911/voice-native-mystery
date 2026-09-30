@@ -1,6 +1,6 @@
 # Data architecture — implemented baseline
 
-MongoDB Atlas is the selected production store. The following repository implementation exists, but the application's Atlas connection and transactions have not been exercised yet. After the Codex restart and owner-enabled AI client access, the plugin created the isolated `Casework` project and free `casework-demo` cluster; cluster readiness is verified. Database credentials, network access, and the application URI remain pending.
+MongoDB Atlas is the selected production store. The isolated `Casework` project and free `casework-demo` cluster are connected locally. The live integration test verifies initialization, real transaction commit/rollback, independent visitor state, approved/heard turn persistence, and recovery through a fresh client/API instance. Browser refresh and concurrent visitors on the public deployment remain verification gates; see [deployment.md](deployment.md).
 
 ## Collections
 
@@ -67,6 +67,6 @@ The browser projection does not include the private candidate reveal/lead metada
 
 MongoDB transactions coordinate cross-document changes; the memory test repository uses a per-session queue. Transactions do not include network/model calls. Voice callback bindings are HMAC-signed and checked against the active lease and selected character, including retries.
 
-The agreed finer-grained clue-bearing-sentence commitment remains a future refinement. The browser's actual word/audio alignment and Atlas transaction retry behavior remain live-test gates. Board pin positions are optional local presentation state in localStorage; they are not game progress or evidence.
+The agreed finer-grained clue-bearing-sentence commitment remains a future refinement. The browser's actual word/audio alignment, broader contention/failure testing, and public deployment remain live-test gates. Two concurrent Atlas visitor admissions and transaction rollback have passed. Board pin positions are optional local presentation state in localStorage; they are not game progress or evidence.
 
 See [implementation-status.md](implementation-status.md) for limits, remaining gates, and restart instructions.
