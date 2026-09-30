@@ -21,7 +21,7 @@ The owner rejected the initial dashboard-style UI in favor of a large, darker in
 2. Copy the stable locally generated `APP_SECRET` securely to Vercel and set the final public HTTPS origin. Revalidate AssemblyAI agent creation, custom callbacks, real audio, barge-in, character switching, delivery alignment, and usage caps end-to-end. Do not call live voice verified yet.
 3. Implement the accepted short **spoken** partner alert at a quiet moment. Currently the alert is visual and opens the partner interview.
 4. Prepare and playtest additional distinct case packs. Only Grange House is currently published in the catalog; the warehouse fixture is test-only. The 15–30-minute duration is a target, not a measured playtest result.
-5. Integrate the existing GitHub `main` history (currently contains the owner's MIT license) without overwriting it; deploy to Vercel and verify public concurrent visitor isolation.
+5. Authenticate GitHub and push the merged local `main` history, then deploy to Vercel and verify public concurrent visitor isolation. The owner's existing MIT license/history is already preserved by a merge; the push was rejected for invalid HTTPS credentials, not a history conflict.
 6. Optimize portrait delivery before public release (current source PNGs total approximately 10 MB), perform prompt-injection/consistency playtests, and check provider/free-tier capacity.
 
 ## Local preview
@@ -40,4 +40,4 @@ Existing `Cohort_Course_Application` and `Project 0` were not modified. The owne
 
 One immutable case pack and all five collections/indexes are initialized. The integration test verifies concurrent visitor admission, isolation, idempotent import and turn retries/acknowledgements, transaction rollback, TTL index definitions, and recovery through a fresh MongoClient/API instance using the stable cookie secret. It uses an explicit model fixture, not real speech, and removes only the two synthetic visitors and their turn/event records; admission counts remain. Do not equate this with public deployment, a browser refresh playtest, live voice, or an actual TTL-expiry test. Keep credentials in ignored `.env`, never in documentation or chat.
 
-Secrets remain in ignored `.env`, not Git. The owner provided `https://github.com/Sayyam2911/voice-native-mystery.git` and authorized publishing the local commit history; preserve its existing MIT license when integrating `main`. Public deployment remains pending.
+Secrets remain in ignored `.env`, not Git. The owner authorized publishing the local commits to `https://github.com/Sayyam2911/voice-native-mystery.git`. Local `main` includes the original remote MIT-license commit through a non-destructive merge. HTTPS push failed with GitHub authentication rejection; Git Credential Manager is installed, but no authenticated GitHub account was listed and GitHub CLI is unavailable. The owner needs to complete GitHub sign-in before the push can be retried. Public deployment remains pending.

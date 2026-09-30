@@ -30,7 +30,7 @@ npm run build
 
 Vercel configuration exists in `vercel.json`, but no public deployment is verified. Before release:
 
-1. Preserve the GitHub repository's existing MIT license when integrating its history.
+1. Complete GitHub sign-in and push local `main`. The original remote MIT license/history is already merged; the first push was rejected for invalid HTTPS credentials. Do not force-push or put tokens into repository URLs.
 2. Set server-side secrets on Vercel, including the same stable `APP_SECRET`; do not use a frontend `VITE_` prefix for any secret.
 3. Configure final `PUBLIC_BASE_URL` and intentionally scoped Atlas network access for deployment. The current allowlist contains only the owner's single client IP, not Vercel egress. Do not silently permit every address.
 4. Tighten `casework_app` from its current cluster-restricted `readWriteAnyDatabase` role to database-specific `readWrite` on `voice_native_mystery`.
