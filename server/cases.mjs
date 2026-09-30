@@ -178,7 +178,12 @@ export function projectGame(pack, session, turns = [], events = []) {
       })),
     exhibits: pack.clues
       .filter((x) => x.inspectable && !known.has(x.id) && ruleSatisfied(x.requires, state))
-      .map(({ id, title, exhibitLabel, source, kind }) => ({ id, title: exhibitLabel || title, source, kind })),
+      .map(({ id, title, exhibitLabel, source, kind }) => ({
+        id,
+        title: exhibitLabel || title,
+        source,
+        kind,
+      })),
     leads: pack.leads.map(({ id, title, description, requires }) => ({
       id,
       title,

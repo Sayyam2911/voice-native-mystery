@@ -143,7 +143,13 @@ export class VoiceService {
     const identity = verify(binding, this.secret);
     requireThat(identity?.sid && identity?.lid, 403, 'Invalid voice binding.');
     const session = await this.game.session(identity.sid);
-    requireThat(session.activeVoice?.id === identity.lid && new Date(session.activeVoice.expiresAt) > new Date() && session.state.selectedCharacterId === identity.cid, 403, 'Voice session is no longer active.');
+    requireThat(
+      session.activeVoice?.id === identity.lid &&
+        new Date(session.activeVoice.expiresAt) > new Date() &&
+        session.state.selectedCharacterId === identity.cid,
+      403,
+      'Voice session is no longer active.',
+    );
     const messages = Array.isArray(body.messages) ? body.messages : [];
     const user = [...messages].reverse().find((x) => x?.role === 'user');
     let text = typeof user?.content === 'string' ? user.content : '';

@@ -24,6 +24,7 @@
       "name": "Detective Rowan",
       "role": "Your investigative partner",
       "voice": "charles",
+      "avatar": "/assets/avatars/grange-house-detective.png",
       "initials": "DR",
       "initial": true,
       "bio": "A measured investigator. Ask Rowan to check a lead, compare evidence, or help you get unstuck.",
@@ -38,6 +39,7 @@
       "name": "Mara Vale",
       "role": "The widow",
       "voice": "anna",
+      "avatar": "/assets/avatars/grange-house-mara.png",
       "initials": "MV",
       "initial": true,
       "bio": "Elliot’s wife. Composed, exhausted, and protective of her privacy.",
@@ -54,6 +56,7 @@
       "name": "Tessa Wright",
       "role": "The longtime aide",
       "voice": "alba",
+      "avatar": "/assets/avatars/grange-house-tessa.png",
       "initials": "TW",
       "initial": true,
       "bio": "Loyal to Mara. Her account closely follows the widow’s.",
@@ -70,6 +73,7 @@
       "name": "Owen Pike",
       "role": "Estate security",
       "voice": "michael",
+      "avatar": "/assets/avatars/grange-house-owen.png",
       "initials": "OP",
       "initial": true,
       "bio": "Responsible for the gate and cameras. Defensive about his shift.",
@@ -86,6 +90,7 @@
       "name": "Jack Hale",
       "role": "A visitor of interest",
       "voice": "paul",
+      "avatar": "/assets/avatars/grange-house-jack.png",
       "initials": "JH",
       "initial": false,
       "bio": "A maritime officer with an old connection to Mara.",
@@ -101,19 +106,21 @@
     {
       "id": "E1",
       "title": "The third wine glass",
+      "exhibitLabel": "Dining-table photograph",
       "kind": "physical",
       "source": "Scene photograph & existing residue note",
-      "body": "Three glasses sit on the dining table. Two have wine residue and lip marks. The third has residue but no sign anyone drank from it. It weakens the claim that three intruders stopped to drink; it is not proof on its own.",
+      "body": "Three glasses sit on the dining table. Two have wine residue and lip marks. The third has residue but no visible lip mark. The residue note records no sign that anyone drank from that glass.",
       "characters": ["mara", "tessa"],
       "inspectable": true,
       "requires": {}
     },
     {
       "id": "E2",
-      "title": "Bound after the attack",
+      "title": "Blood beneath the cord",
+      "exhibitLabel": "Chair and binding cord",
       "kind": "physical",
       "source": "Preliminary scene report",
-      "body": "Blood is present on the chair beneath the binding cord. The pattern indicates Mara was placed and tied there after the fatal injury. The curtain cord was cut and deliberately frayed. Her account of being tied before the attack does not fit.",
+      "body": "The scene photograph shows blood on the chair underneath the binding cord. The cord has a clean cut at one end, with loose fibres pulled outward. Mara says she was already tied to the chair when the attack began.",
       "characters": ["mara", "tessa", "jack"],
       "inspectable": true,
       "requires": {}
@@ -123,7 +130,7 @@
       "title": "Silverware in the pond",
       "kind": "physical",
       "source": "Rowan’s grounds search",
-      "body": "The missing silver pieces were hidden in the estate pond. A theft that never left the grounds supports a staged burglary rather than the reported escape.",
+      "body": "The missing silver pieces were recovered together from the estate pond. The household inventory confirms that they are the pieces reported stolen. The pond lies within the estate grounds.",
       "characters": ["mara", "tessa", "jack"]
     },
     {
@@ -131,7 +138,7 @@
       "title": "Jack’s recorded visit",
       "kind": "record",
       "source": "Service-gate recording & vehicle records",
-      "body": "A single vehicle entered at 22:32 and left at 23:12, before the 23:18 alarm. Existing vehicle records identify the driver as Jack Hale. The records establish presence, not the fatal blow.",
+      "body": "The service-gate recording shows one vehicle entering at 22:32 and leaving at 23:12. Vehicle records identify the driver as Jack Hale. The emergency call was made at 23:18.",
       "characters": ["owen", "jack"],
       "unlockCharacters": ["jack"]
     },
@@ -140,7 +147,7 @@
       "title": "A borrowed burglar story",
       "kind": "record",
       "source": "News archive & verified custody records",
-      "body": "Mara’s description closely matches a recently reported burglary group. All three were already in custody that night. The account cannot identify the real visitors.",
+      "body": "A recent news report describes a three-person burglary group in terms similar to Mara’s account. The custody register records all three in detention throughout the night of Elliot’s death.",
       "characters": ["mara", "tessa"]
     },
     {
@@ -317,7 +324,7 @@
       "requires": {
         "any": ["E1", "E2"]
       },
-      "speech": "The missing silverware was hidden in the estate pond. That supports a staged theft rather than the escape Mara described.",
+      "speech": "The missing silver pieces were recovered together from the estate pond. The household inventory confirms they are the pieces reported stolen. The pond is inside the grounds.",
       "clueIds": ["E3"],
       "keywords": ["silver", "pond", "grounds", "theft"]
     },
@@ -326,7 +333,7 @@
       "title": "Verify the reported burglar group",
       "description": "Check the familiar description against independent records.",
       "requires": {},
-      "speech": "The described burglary group was in custody that night. The witness account appears borrowed from a news report, rather than a reliable description of visitors.",
+      "speech": "The news archive describes a three-person burglary group in terms similar to the witness account. The custody register places all three in detention throughout that night.",
       "clueIds": ["E5"],
       "keywords": ["burglar", "group", "news"]
     }

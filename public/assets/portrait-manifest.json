@@ -1,0 +1,26 @@
+{
+  "generator": "Built-in image generation (not the CLI/API fallback)",
+  "purpose": "Fictional character portrait photos for pinned-polaroid UI; not real people's photographs.",
+  "assets": [
+    {
+      "file": "avatars/grange-house-detective.png",
+      "prompt": "Use case: photorealistic-natural. Asset type: fictional character portrait for a contemporary murder-mystery investigation game, used as a printed photo pinned to a dark evidence board. Subject: A fictional male investigative partner around 50, salt-and-pepper short hair, subtle stubble, thoughtful calm eyes, dark tweed jacket over a charcoal shirt. Scene/backdrop: plain dim neutral gray-brown background. Composition: single person only, centered head and shoulders with the entire head visible, eye-level 85mm portrait, vertical portrait crop. Style: believable natural photography, real skin pores and hair texture, not a cartoon, not an illustration, not a celebrity, no glamor retouching. Lighting: soft moody side light, face fully legible, muted earthy color, restrained film grain. No weapon, no blood, no text, no border, no watermark, no logos. Entirely invented person."
+    },
+    {
+      "file": "avatars/grange-house-mara.png",
+      "prompt": "Use case: photorealistic-natural. Asset type: fictional character portrait for a contemporary murder-mystery investigation game, used as a printed photo pinned to a dark evidence board. Subject: A fictional woman around 38, shoulder-length dark brown hair, restrained exhausted expression, dark navy blouse, composed and private. Scene/backdrop: plain dim neutral gray-brown background. Composition: single person only, centered head and shoulders with the entire head visible, eye-level 85mm portrait, vertical portrait crop. Style: believable natural photography, real skin pores and hair texture, not a cartoon, not an illustration, not a celebrity, no glamor retouching. Lighting: soft moody side light, face fully legible, muted earthy color, restrained film grain. No weapon, no blood, no text, no border, no watermark, no logos. Entirely invented person."
+    },
+    {
+      "file": "avatars/grange-house-tessa.png",
+      "prompt": "Use case: photorealistic-natural. Asset type: fictional character portrait for a contemporary murder-mystery investigation game, used as a printed photo pinned to a dark evidence board. Subject: A fictional woman around 50, auburn-brown hair loosely tied back, alert wary expression, simple charcoal cardigan, practical everyday appearance. Scene/backdrop: plain dim neutral gray-brown background. Composition: single person only, centered head and shoulders with the entire head visible, eye-level 85mm portrait, vertical portrait crop. Style: believable natural photography, real skin pores and hair texture, not a cartoon, not an illustration, not a celebrity, no glamor retouching. Lighting: soft moody side light, face fully legible, muted earthy color, restrained film grain. No weapon, no blood, no text, no border, no watermark, no logos. Entirely invented person."
+    },
+    {
+      "file": "avatars/grange-house-owen.png",
+      "prompt": "Use case: photorealistic-natural. Asset type: fictional character portrait for a contemporary murder-mystery investigation game, used as a printed photo pinned to a dark evidence board. Subject: A fictional man around 34, cropped dark hair, trimmed beard, guarded expression, black zip-up work jacket without any logos, ordinary security employee. Scene/backdrop: plain dim neutral gray-brown background. Composition: single person only, centered head and shoulders with the entire head visible, eye-level 85mm portrait, vertical portrait crop. Style: believable natural photography, real skin pores and hair texture, not a cartoon, not an illustration, not a celebrity, no glamor retouching. Lighting: soft moody side light, face fully legible, muted earthy color, restrained film grain. No weapon, no blood, no text, no border, no watermark, no logos. Entirely invented person."
+    },
+    {
+      "file": "avatars/grange-house-jack.png",
+      "prompt": "Use case: photorealistic-natural. Asset type: fictional character portrait for a contemporary murder-mystery investigation game, used as a printed photo pinned to a dark evidence board. Subject: A fictional man around 42, dark wavy hair, light stubble, serious measured expression, plain dark overcoat, athletic but natural everyday appearance. Scene/backdrop: plain dim neutral gray-brown background. Composition: single person only, centered head and shoulders with the entire head visible, eye-level 85mm portrait, vertical portrait crop. Style: believable natural photography, real skin pores and hair texture, not a cartoon, not an illustration, not a celebrity, no glamor retouching. Lighting: soft moody side light, face fully legible, muted earthy color, restrained film grain. No weapon, no blood, no text, no border, no watermark, no logos. Entirely invented person."
+    }
+  ]
+}
