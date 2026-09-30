@@ -6,5 +6,7 @@ dist/
 .vercel/
 coverage/
 .npm-cache/
-prototype/voice-agent/tools/
+# Private development history and local presentation build artifacts.
+prototype/
+.local/
 *.log

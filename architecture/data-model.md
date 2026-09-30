@@ -1,72 +1,96 @@
-# Data architecture — implemented baseline
+# Data and state
 
-MongoDB Atlas is the selected production store. The isolated `Casework` project and free `casework-demo` cluster are connected locally. The live integration test verifies initialization, real transaction commit/rollback, independent visitor state, approved/heard turn persistence, and recovery through a fresh client/API instance. Browser refresh and concurrent visitors on the public deployment remain verification gates; see [deployment.md](deployment.md).
-
-## Collections
-
-| Collection | Boundary | Important fields and indexes |
-| --- | --- | --- |
-| `case_packs` | One immutable, shared case version | `_id: id:version`, `id`, `version`, `schemaVersion`, authored pack, `contentHash`, `publishedAt`; unique `(id, version)` |
-| `sessions` | One anonymous visitor's current investigation | `_id`, `caseId`, `caseVersion`, `state`, `revision`, `turnCount`, `turnLock`, `activeVoice`, `voiceSeconds`, timestamps, `expiresAt` |
-| `turns` | One player/character exchange | `_id: sessionId:requestId`, `sessionId`, `turnNo`, `characterId`, `channel`, `voiceLeaseId`, `playerTranscript`, `approvedReply`, private `candidate`, `heardText`, `status`, `modelMode`, timestamps; unique `(sessionId, turnNo)` |
-| `session_events` | One sourced committed discovery or accusation attempt | `_id`, `sessionId`, `type`, `clueId` or accusation fields, `source`, `occurredAt`, `expiresAt`; index `(sessionId, occurredAt)` |
-| `limits` | Shared demo admission and voice-slot counters | Daily session count or numbered voice slot with owner lease ID and `expiresAt` |
-
-Sessions, turns, events, and limit records have TTL indexes on `expiresAt`. Backend expiry checks remain mandatory because TTL cleanup is asynchronous. Default session retention is a fixed 24 hours, not a sliding window.
+## Collection boundaries
 
 ```mermaid
 erDiagram
-    CASE_PACK ||--o{ SESSION : "caseId and caseVersion"
-    SESSION ||--o{ TURN : sessionId
-    SESSION ||--o{ SESSION_EVENT : sessionId
-    TURN |o--o{ SESSION_EVENT : "source.turnId"
+    CASE_PACK ||--o{ SESSION : "pins case version"
+    SESSION ||--o{ TURN : "contains dialogue"
+    SESSION ||--o{ SESSION_EVENT : "records discoveries"
+    TURN |o--o{ SESSION_EVENT : "provides provenance"
+    CASE_PACK {
+        string id
+        int version
+        int schemaVersion
+        object characters_clues_rules
+        string contentHash
+    }
+    SESSION {
+        string sessionId
+        string caseId
+        int caseVersion
+        object state
+        int revision
+        object activeVoice
+        date expiresAt
+    }
+    TURN {
+        string sessionId_requestId
+        int turnNo
+        string characterId
+        string voiceLeaseId
+        string playerTranscript
+        object approvedReply
+        object privateCandidate
+        string heardText
+        string status
+    }
+    SESSION_EVENT {
+        string sessionId
+        string type
+        object source
+        date occurredAt
+        date expiresAt
+    }
+    LIMIT {
+        string dailyOrSlotId
+        string ownerLeaseId
+        int count
+        date expiresAt
+    }
 ```
 
-These are logical references, not SQL joins. A case's characters, clues, and rules are embedded in a single pack; unbounded transcript/event growth is kept outside the small session snapshot.
+The diagram shows logical document relationships, not SQL constraints. `limits` admission/voice ownership is logical: there is no database foreign-key relationship. Actual collection names are `case_packs`, `sessions`, `turns`, `session_events`, and `limits`.
 
-## Case definition versus visitor state
+| Collection | Design reason |
+| --- | --- |
+| `case_packs` | Shared immutable story versions embed bounded characters, observations, reveal rules, and proof groups |
+| `sessions` | A small per-visitor progress snapshot avoids rereading the entire transcript for every action |
+| `turns` | Dialogue grows separately from the session snapshot and preserves approved versus heard text |
+| `session_events` | Source-linked discoveries and accusation attempts support provenance and auditability |
+| `limits` | Shared counters and leased slots work across backend instances rather than process-local memory |
 
-Validated authoring files in `cases/*.json` are automatically discovered and imported into Atlas. Import is idempotent for matching content, but rejects changes to an already-published version. New content needs a version bump; existing sessions keep their pinned version.
+## State ownership
 
-A pack contains both presentation material and private resolution/reveal rules. Privacy is enforced by server allowlist projections, not by merely naming a JSON field `private`. The browser receives safe metadata, unlocked people, discovered observations, neutral labels for unexamined exhibits, and permitted lead descriptions. It never imports the pack or reads Atlas directly.
-
-The state snapshot contains `knownClueIds`, `revealedIds`, `unlockedCharacterIds`, highest heard `characterLevels`, `completedLeadIds`, `selectedCharacterId`, status, optional resolution, and partner alert. The partner ID is supplied by the case; no particular character name or clue ID is built into the engine.
-
-## Exchange shape
-
-```json
-{
-  "_id": "visitor-id:request-id",
-  "sessionId": "visitor-id",
-  "turnNo": 12,
-  "characterId": "witness-id",
-  "channel": "voice",
-  "voiceLeaseId": "temporary-lease-id",
-  "playerTranscript": "When did you arrive?",
-  "approvedReply": {
-    "text": "I arrived earlier than I said. I saw the aftermath.",
-    "segments": [
-      { "id": "visitor-id:request-id:0", "text": "I arrived earlier than I said.", "heard": true },
-      { "id": "visitor-id:request-id:1", "text": "I saw the aftermath.", "heard": false }
-    ]
-  },
-  "heardText": "I arrived earlier than I said.",
-  "status": "interrupted"
-}
+```mermaid
+flowchart LR
+    Pack[Published case version<br/>Immutable truth and prerequisites]
+    Snapshot[Session snapshot<br/>Known clues, available people,<br/>disclosure levels and resolution]
+    History[Turns and events<br/>Text history and provenance]
+    Projection[Player-safe projection<br/>Discovered content only]
+    Layout[Browser localStorage<br/>Optional pin positions]
+    Pack --> Projection
+    Snapshot --> Projection
+    History --> Projection
+    Projection --> UI[React UI]
+    Layout --> UI
+    classDef authority fill:#f5ead2,stroke:#9c7841,color:#352810;
+    classDef presentation fill:#e7eee5,stroke:#45614a,color:#17271c;
+    class Pack,Snapshot,History authority;
+    class Projection,Layout,UI presentation;
 ```
 
-The browser projection does not include the private candidate reveal/lead metadata. Raw microphone audio, synthesized audio, rejected model output, and prompt logs are not archived by the application.
+The backend tracks `knownClueIds`, `revealedIds`, `unlockedCharacterIds`, heard `characterLevels`, `completedLeadIds`, selected character, status, and optional resolution. Local pin positions are presentation only. Moving a note never creates evidence.
 
-## Write order and concurrency
+## Persistence guarantees
 
-1. Transactionally insert the transcript and acquire a bounded turn lock before calling the model.
-2. Outside the transaction, build case-scoped context and request one structured proposal.
-3. Validate the proposal and persist the approved response before returning text or streaming speech.
-4. Validate delivery acknowledgements against whole approved sentence prefixes. The current conservative implementation commits a critical reveal only after the entire short approved reply is heard; partial delivery is stored without unlocking its clues.
-5. Transactionally update heard state, discovery events, disclosure levels, and session snapshot. Repeat acknowledgements and turn request IDs are idempotent.
+- Case files are automatically discovered from `cases/*.json`, validated, and imported idempotently. Changing an already-published version is rejected; a new version preserves existing sessions' pinned content.
+- Turn request IDs and acknowledgements are idempotent. A unique `(sessionId, turnNo)` index protects turn numbering.
+- Transactions coordinate session snapshots, turn changes, and discovery events. The model request never holds a transaction open.
+- Sessions, turns, events, and limit documents have TTL indexes. The application also checks expiry because TTL removal is asynchronous.
+- Anonymous recovery lasts a fixed **24 hours**. Long-term accounts, cross-device saves, and multiplayer are outside the current scope.
+- MongoDB stores text/progress, not microphone or synthesized audio. Provider processing/retention policies remain separate from what this application stores.
 
-MongoDB transactions coordinate cross-document changes; the memory test repository uses a per-session queue. Transactions do not include network/model calls. Voice callback bindings are HMAC-signed and checked against the active lease and selected character, including retries.
+The opt-in Atlas test verifies real transaction commit/rollback, two isolated synthetic visitors, persisted approved/heard turns, and signed-cookie recovery through a fresh client/API instance. It does not establish public load capacity or exact TTL deletion timing.
 
-The agreed finer-grained clue-bearing-sentence commitment remains a future refinement. The browser's actual word/audio alignment, broader contention/failure testing, and public deployment remain live-test gates. Two concurrent Atlas visitor admissions and transaction rollback have passed. Board pin positions are optional local presentation state in localStorage; they are not game progress or evidence.
-
-See [implementation-status.md](implementation-status.md) for limits, remaining gates, and restart instructions.
+Source: [`server/store.mjs`](../server/store.mjs), [`server/game.mjs`](../server/game.mjs), [`server/cases.mjs`](../server/cases.mjs), [`tests/integration/mongodb.test.mjs`](../tests/integration/mongodb.test.mjs).
